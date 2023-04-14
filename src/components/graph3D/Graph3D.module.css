@@ -1,0 +1,38 @@
+.figuresMenu {
+	position: absolute;
+	flex-direction: column;
+	display: flex;
+	align-items: center;
+	background-color: none;
+	width: 27%;
+	height: 500px;
+	scrollbar-gutter: stable;
+	top: 0;
+	left: 0;
+	transition: 0.2s;
+	margin-top: 80px;
+	overflow: hidden;
+}
+
+.allows {
+	align-items: center;
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+}
+
+.addFigureBtn {
+background-image: url(../../modules/graph2D/Arrow.svg)center no-repeat;
+	position: absolute;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	background-color: var(--gray-light);
+	width: 30px;
+	height: 30px;
+	scrollbar-gutter: stable;
+	top: 0;
+	left: 0;
+	transition: 0.4s;
+	margin-top: 50px;
+}

@@ -1,25 +1,30 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import { Menu } from './layout/Menu/Menu';
+import { Graph2DComponent } from './components/graph2D/Graph2DComponent';
+import { Graph3DComponent } from './components/graph3D/Graph3DComponent';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class App extends React.Component {
+	constructor(props) {
+		super(props);
+		this.state = { showComponent: 'canvas3dContent' };
+	}
+
+	showComponent(name) {
+		this.setState({ showComponent: name })
+	}
+
+	render() {
+		return <>
+			<div className='menu'>
+				<Menu showComponent={name => this.showComponent(name)} />
+				{this.state.showComponent === 'canvasContent' ?
+					<Graph2DComponent /> :
+					this.state.showComponent === 'canvas3dContent' ?
+						<Graph3DComponent /> :
+						<>default</>}
+			</div>
+		</>
+	};
 }
 
 export default App;

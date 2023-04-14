@@ -1,0 +1,28 @@
+html,
+body {
+	margin: 0;
+	padding: 0;
+
+	color: var(--black);
+	background: #E5E5E5;
+
+	font-family: "Noto Sans KR", sans-serif;
+}
+
+:root {
+	--black: #3B434E;
+	--gray-light: #ebebeb;
+	--gray-dark: #787d85;
+	--white: #fff;
+	--primary: #8956e7;
+	--primary-hover: #7417b3;
+	--gray: #A4A4A4;
+}
+
+.active {
+	background: var(--gray-light);
+}
+
+.hide {
+	display: none;
+}
