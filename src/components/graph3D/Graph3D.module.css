@@ -1,3 +1,7 @@
+.graph3d{
+	margin-left: 300px;
+}
+
 .figuresMenu {
 	position: absolute;
 	flex-direction: column;
@@ -15,14 +19,11 @@
 }
 
 .allows {
-	align-items: center;
-	display: flex;
-	flex-direction: row;
-	justify-content: space-between;
+	display: block;
 }
 
-.addFigureBtn {
-background-image: url(../../modules/graph2D/Arrow.svg)center no-repeat;
+.figListBtn {
+	background-image: url(../../modules/graph2D/Arrow.svg)center no-repeat;
 	position: absolute;
 	display: flex;
 	flex-direction: column;
@@ -35,4 +36,32 @@ background-image: url(../../modules/graph2D/Arrow.svg)center no-repeat;
 	left: 0;
 	transition: 0.4s;
 	margin-top: 50px;
+}
+
+.figListBtn:hover {
+	color: var(--white);
+	background-color: var(--primary);
+}
+
+.addFig {
+	box-sizing: border-box;
+	cursor: pointer;
+	text-align: center;
+	border-radius: 5px;
+	color: var(--black);
+	background: none;
+	border: 1px solid var(--gray);
+
+}
+
+.addFig:hover {
+	color: var(--white);
+	background-color: var(--primary);
+}
+
+.figsContainer {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	width: 100%;
 }

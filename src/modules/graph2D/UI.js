@@ -1,69 +1,50 @@
-export class UI {
-	constructor({
-		changeColor,
-		changeWidth,
-		changeA,
-		changeB,
-		switchDerivativeCheckBox,
-		switchIntegralCheckBox,
-		switchZerosCheckBox,
-		addFunction,
-		delFunction,
-		createObjectFunc
-	}) {
-		this.addFunction = addFunction;
-		this.delFunction = delFunction;
-		this.changeWidth = changeWidth;
-		this.changeColor = changeColor;
-		this.changeA = changeA;
-		this.changeB = changeB;
-		this.switchDerivativeCheckBox = switchDerivativeCheckBox;
-		this.switchIntegralCheckBox = switchIntegralCheckBox;
-		this.switchZerosCheckBox = switchZerosCheckBox;
-		this.createObjectFunc = createObjectFunc;
+import { useState } from "react";
 
-		this.num = 0;
-		/* document.querySelector('.addFunction').addEventListener('click', () => this.addFunctionHandler()); */
+const UI = ({
+	changeColor,
+	changeWidth,
+	changeA,
+	changeB,
+	switchDerivativeCheckBox,
+	switchIntegralCheckBox,
+	switchZerosCheckBox,
+	addFunction,
+	delFunction,
+	createObjectFunc
+}) => {
 
-		/* const arrow = document.querySelector('.menuGraphButton');
-		arrow.addEventListener('click', () => {
-			arrow.classList.toggle('down')
-			var div = document.querySelector('.container2')
-			div.style.transform = div.style.transform === 'translateX(-100%)' ? 'translateX(0%)' : 'translateX(-100%)'
-		}); */
-	}
+	const [num, setNum] = useState(0);
 
-	addFunctionHandler() {
-
-		const inputFunc = this.createInput(this.keyUpFunctionHandler, 'f(x)', 'inputFunc');
-		const inputWidth = this.createInput(this.keyUpWidthHandler, 'Width', 'inputWidth', 'number');
-		const inputColor = this.createInput(this.keyUpColorHandler, 'Color', 'inputColor', 'color');
-		const inputA = this.createInput(this.keyUpAHandler, 'a', 'inputA', 'number');
-		const inputB = this.createInput(this.keyUpBHandler, 'b', 'inputB', 'number');
+	const addFunctionHandler = () => {
+		const inputFunc = createInput(keyUpFunctionHandler, 'f(x)', 'inputFunc');
+		const inputWidth = createInput(keyUpWidthHandler, 'Width', 'inputWidth', 'number');
+		const inputColor = createInput(keyUpColorHandler, 'Color', 'inputColor', 'color');
+		const inputA = createInput(keyUpAHandler, 'a', 'inputA', 'number');
+		const inputB = createInput(keyUpBHandler, 'b', 'inputB', 'number');
 
 		const button = document.createElement('button');
 		button.innerHTML = '&#10006';
-		button.dataset.num = this.num;
+		button.dataset.num = num;
 		button.addEventListener('click', () => {
 			div.removeChild(funcBlock);
-			this.delFunction(button.dataset.num);
+			delFunction(button.dataset.num);
 		})
 		button.className = 'deleteFunc';
 
 		const checkDerivative = document.createElement('div');
-		checkDerivative.dataset.num = this.num;
+		checkDerivative.dataset.num = num;
 		checkDerivative.className = 'switch-btn';
-		checkDerivative.addEventListener('click', (event) => this.switchDerivativeHandler(event))
+		checkDerivative.addEventListener('click', (event) => switchDerivativeHandler(event))
 
 		const checkIntegral = document.createElement('div');
-		checkIntegral.dataset.num = this.num;
+		checkIntegral.dataset.num = num;
 		checkIntegral.className = 'switch-btn';
-		checkIntegral.addEventListener('click', (event) => this.switchIntegralHandler(event))
+		checkIntegral.addEventListener('click', (event) => switchIntegralHandler(event))
 
 		const checkZeros = document.createElement('div');
-		checkZeros.dataset.num = this.num;
+		checkZeros.dataset.num = num;
 		checkZeros.className = 'switch-btn';
-		checkZeros.addEventListener('click', (event) => this.switchZerosHandler(event))
+		checkZeros.addEventListener('click', (event) => switchZerosHandler(event))
 
 		const funcBlock = document.createElement('div');
 		funcBlock.className = 'funcBlock';
@@ -82,13 +63,13 @@ export class UI {
 
 		div.appendChild(funcBlock);
 
-		this.createObjectFunc(this.num);
-		this.num++;
+		createObjectFunc(num);
+		setNum(num + 1);
 	}
 
-	createInput(handler, placeholder, className, type = 'text') {
+	const createInput = (handler, placeholder, className, type = 'text') => {
 		const input = document.createElement('input');
-		input.dataset.num = this.num;
+		input.dataset.num = num;
 		input.addEventListener('input', (event) => handler(event));
 		input.setAttribute('placeholder', placeholder);
 		input.setAttribute('type', type);
@@ -96,44 +77,46 @@ export class UI {
 		return input;
 	}
 
-	keyUpFunctionHandler = (event) => {
+	const keyUpFunctionHandler = (event) => {
 		try {
 			let f;
 			eval(`f = function(x) {return ${event.target.value};}`);
-			this.addFunction(event.target.dataset.num, f);
+			addFunction(event.target.dataset.num, f);
 		} catch (e) {
 			console.log(e);
 		}
 	}
 
-	keyUpWidthHandler = (event) => {
-		this.changeWidth(event.target.dataset.num, event.target.value);
+	const keyUpWidthHandler = (event) => {
+		changeWidth(event.target.dataset.num, event.target.value);
 	}
 
-	keyUpColorHandler = (event) => {
-		this.changeColor(event.target.dataset.num, event.target.value);
+	const keyUpColorHandler = (event) => {
+		changeColor(event.target.dataset.num, event.target.value);
 	}
 
-	keyUpAHandler = (event) => {
-		this.changeA(event.target.dataset.num, event.target.value);
+	const keyUpAHandler = (event) => {
+		changeA(event.target.dataset.num, event.target.value);
 	}
 
-	keyUpBHandler = (event) => {
-		this.changeB(event.target.dataset.num, event.target.value);
+	const keyUpBHandler = (event) => {
+		changeB(event.target.dataset.num, event.target.value);
 	}
 
-	switchDerivativeHandler(event) {
+	const switchDerivativeHandler = (event) => {
 		event.target.classList.toggle('switch-on');
-		this.switchDerivativeCheckBox(event.target.dataset.num);
+		switchDerivativeCheckBox(event.target.dataset.num);
 	}
 
-	switchIntegralHandler(event) {
+	const switchIntegralHandler = (event) => {
 		event.target.classList.toggle('switch-on');
-		this.switchIntegralCheckBox(event.target.dataset.num);
+		switchIntegralCheckBox(event.target.dataset.num);
 	}
 
-	switchZerosHandler(event) {
+	const switchZerosHandler = (event) => {
 		event.target.classList.toggle('switch-on');
-		this.switchZerosCheckBox(event.target.dataset.num);
+		switchZerosCheckBox(event.target.dataset.num);
 	}
 }
+
+export default UI;

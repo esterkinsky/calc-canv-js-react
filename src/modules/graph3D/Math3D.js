@@ -58,7 +58,6 @@ export class Math3D {
 	};
 
 	calcShadow(polygon, figures, LIGHT) {
-		//чут чут что то не работает, может быть полигоны фигуры перекрывают свои же полигоны, может ещё чево, но тени появились)0
 		const M1 = polygon.center;
 		const r = polygon.R;
 		const S = this.calcVector(M1, LIGHT);

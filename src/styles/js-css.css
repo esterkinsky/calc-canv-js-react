@@ -6,7 +6,6 @@
 	transition: 0.2s;
 }
 
-.menu-item-button,
 #figures {
 	justify-content: center;
 	box-sizing: border-box;
@@ -23,8 +22,6 @@
 	border: 1px solid var(--gray);
 }
 
-.menu-item-button:hover,
-.addFunction:hover,
 .addFigure:hover {
 	color: var(--white);
 	background-color: var(--primary);
@@ -82,8 +79,7 @@
 	border: 1px solid var(--gray);
 }
 
-.addFunction,
-.addFigure {
+.addFunction{
 	box-sizing: border-box;
 	cursor: pointer;
 	text-align: center;
