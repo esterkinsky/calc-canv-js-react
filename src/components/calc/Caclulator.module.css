@@ -1,0 +1,91 @@
+.calcsContainer {
+	display: flex;
+	box-sizing: border-box;
+	justify-content: center;
+}
+
+.containerC {
+	max-width: 300px;
+	margin: 2vh 5vh 2vh 5vh;
+	box-shadow: 0px 0px 10px 3px var(--gray);
+}
+
+.number,
+.resultNumber,
+.polyInputA,
+.polyInputB,
+.polyInputX,
+.newPoly,
+.polyResult {
+	border: 0.5px solid var(--gray);
+	width: 100%;
+	max-width: 100%;
+	min-width: 100%;
+	max-height: 120px;
+	min-height: 50px;
+	text-align: left;
+	border-radius: 5px;
+	height: 45px;
+	font-size: 25px;
+	background-color: var(--gray-light);
+	box-sizing: border-box;
+	padding: 5px 5px 5px 5px;
+	color: var(--gray-dark);
+	outline: none;
+}
+
+.buttons,
+.calcButtons {
+	display: grid;
+	border-bottom: 1px solid var(--gray);
+	border-left: 1px solidvar(--gray);
+	grid-template-columns: 1fr 1fr 1fr 1fr;
+	border-radius: 5px;
+}
+
+.buttons>div,
+.calcButtons>div {
+	border-top: 1px solid var(--gray);
+	border-right: 1px solid var(--gray);
+}
+
+.operands,
+.polyOperand,
+.resultButton {
+	cursor: pointer;
+	font-size: 25px;
+	line-height: 70px;
+	border: 0.5px solid var(--gray);
+	background-color: var(--primary);
+	color: var(--white);
+	border-radius: 5px;
+}
+
+.clear {
+	cursor: pointer;
+	font-size: 25px;
+	line-height: 70px;
+	border: 0.5px solid var(--gray);
+	background-color: var(--gray-light);
+	color: var(--primary);
+	border-radius: 5px;
+}
+
+.clear:hover {
+	background-color: var(--white);
+	color: var(--primary-hover);
+	transition: 0.2s;
+}
+
+.operands:hover,
+.polyOperand:hover,
+.resultButton:hover {
+	background-color: var(--primary-hover);
+	transition: 0.2s;
+}
+
+.calc_button:hover {
+	background-color: var(--gray);
+	color: var(--white);
+	transition: 0.2s;
+}

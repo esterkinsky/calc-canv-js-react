@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
+import styles from '../graph2D/Graph2D.module.css'
 
 const UI = ({
 	changeColor,
@@ -14,6 +15,11 @@ const UI = ({
 }) => {
 
 	const [num, setNum] = useState(0);
+	const [showPanel, setShowPanel] = useState(false);
+
+	const showHidePanelHandler = useCallback(() => {
+		setShowPanel(!showPanel);
+	}, [setShowPanel, showPanel]);
 
 	const addFunctionHandler = () => {
 		const inputFunc = createInput(keyUpFunctionHandler, 'f(x)', 'inputFunc');
@@ -33,17 +39,17 @@ const UI = ({
 
 		const checkDerivative = document.createElement('div');
 		checkDerivative.dataset.num = num;
-		checkDerivative.className = 'switch-btn';
+		checkDerivative.className = `${styles.switchBtn}`;
 		checkDerivative.addEventListener('click', (event) => switchDerivativeHandler(event))
 
 		const checkIntegral = document.createElement('div');
 		checkIntegral.dataset.num = num;
-		checkIntegral.className = 'switch-btn';
+		checkIntegral.className = `${styles.switchBtn}`;
 		checkIntegral.addEventListener('click', (event) => switchIntegralHandler(event))
 
 		const checkZeros = document.createElement('div');
 		checkZeros.dataset.num = num;
-		checkZeros.className = 'switch-btn';
+		checkZeros.className = `${styles.switchBtn}`;
 		checkZeros.addEventListener('click', (event) => switchZerosHandler(event))
 
 		const funcBlock = document.createElement('div');
@@ -59,7 +65,7 @@ const UI = ({
 		funcBlock.appendChild(checkIntegral);
 		funcBlock.appendChild(button);
 
-		const div = document.querySelector('.funcsContainer');
+		const div = document.getElementById('funcsContainer');
 
 		div.appendChild(funcBlock);
 
@@ -80,8 +86,8 @@ const UI = ({
 	const keyUpFunctionHandler = (event) => {
 		try {
 			let f;
-			eval(`f = function(x) {return ${event.target.value};}`);
-			addFunction(event.target.dataset.num, f);
+			eval(`f = function(x) {return ${event.target.value}}`);
+			addFunction(event.target.dataset.num, f)
 		} catch (e) {
 			console.log(e);
 		}
@@ -104,19 +110,30 @@ const UI = ({
 	}
 
 	const switchDerivativeHandler = (event) => {
-		event.target.classList.toggle('switch-on');
+		event.target.classList.toggle(`${styles.switchOn}`);
 		switchDerivativeCheckBox(event.target.dataset.num);
 	}
 
 	const switchIntegralHandler = (event) => {
-		event.target.classList.toggle('switch-on');
+		event.target.classList.toggle(`${styles.switchOn}`);
 		switchIntegralCheckBox(event.target.dataset.num);
 	}
 
 	const switchZerosHandler = (event) => {
-		event.target.classList.toggle('switch-on');
+		event.target.classList.toggle(`${styles.switchOn}`);
 		switchZerosCheckBox(event.target.dataset.num);
 	}
+
+	return <>
+		{showPanel && <div className={styles.funcsMenu}>
+			<div className="addButton">
+				<button onClick={() => addFunctionHandler()} className={styles.addFunction}>Add f(x)</button>
+				<div className={styles.funcsContainer} id='funcsContainer'></div>
+			</div>
+		</div>
+		}
+		<button onClick={showHidePanelHandler} className={styles.funcsListBtn}></button>
+	</>
 }
 
 export default UI;

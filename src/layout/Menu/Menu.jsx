@@ -6,12 +6,15 @@ const Menu = ({ showComponent }) => {
 		<div className={styles.menu}>
 			<button className={styles.menuitem} onClick={() => { showComponent('RPGContent') }}
 			>RPG</button>
-			<button className={styles.menuitem} onClick={() => { showComponent('calculator') }}
+			<button className={styles.menuitem} onClick={() => { showComponent('calculatorContent') }}
 			>Calculator</button>
-			<button className={styles.menuitem} id="canvas-button" onClick={() => { showComponent('canvasContent') }}
+			<button className={styles.menuitem} onClick={() => { showComponent('polinomialContent') }}
+			>Poli Calculator</button>
+			<button className={styles.menuitem} onClick={() => { showComponent('canvasContent') }}
 			>Graph2d</button>
-			<button className={styles.menuitem} id="3d-button" onClick={() => { showComponent('canvas3dContent') }}
+			<button className={styles.menuitem} onClick={() => { showComponent('canvas3dContent') }}
 			>Graph3d</button>
+
 		</div>
 	</>
 };

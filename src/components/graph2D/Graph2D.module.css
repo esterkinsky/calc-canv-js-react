@@ -1,20 +1,4 @@
-.menuGraphButton {
-	background-image: url(../../modules/graph2D/Arrow.svg)center no-repeat;
-	position: absolute;
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	background-color: var(--gray-light);
-	width: 30px;
-	height: 30px;
-	scrollbar-gutter: stable;
-	top: 0;
-	left: 0;
-	transition: 0.4s;
-	margin-top: 50px;
-}
-
-.container2 {
+.funcsMenu {
 	position: absolute;
 	flex-direction: column;
 	display: flex;
@@ -30,6 +14,27 @@
 	overflow: hidden;
 }
 
+.funcsListBtn {
+	background-image: url(../../modules/graph2D/Arrow.svg)center no-repeat;
+	position: absolute;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	background-color: var(--gray-light);
+	width: 30px;
+	height: 30px;
+	scrollbar-gutter: stable;
+	top: 0;
+	left: 0;
+	transition: 0.4s;
+	margin-top: 50px;
+}
+
+.funcsListBtn:hover {
+	color: var(--white);
+	background-color: var(--primary);
+}
+
 .addFunction {
 	box-sizing: border-box;
 	cursor: pointer;
@@ -41,6 +46,11 @@
 
 }
 
+.addFunction:hover {
+	color: var(--white);
+	background-color: var(--primary);
+}
+
 .funcsContainer {
 	display: flex;
 	flex-direction: column;
@@ -48,7 +58,35 @@
 	width: 100%;
 }
 
-.addFunction:hover{
-	color: var(--white);
-	background-color: var(--primary);
+.switchBtn {
+	display: inline-block;
+	width: 30px;
+	height: 15px;
+	border-radius: 19px;
+	background: var(--gray-dark);
+	z-index: 0;
+	margin: 0;
+	cursor: pointer;
+	position: relative;
+	transition-duration: 300ms;
+}
+
+.switchBtn::after {
+	content: "";
+	height: 15px;
+	width: 15px;
+	border-radius: 16px;
+	background: var(--white);
+	left: 0;
+	transition-duration: 300ms;
+	position: absolute;
+	z-index: 1;
+}
+
+.switchOn {
+	background: var(--primary);
+}
+
+.switchOn::after {
+	left: 15px;
 }

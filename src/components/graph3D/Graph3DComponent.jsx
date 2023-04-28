@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import UI3D from './UI3D';
-import Canvas from '../../modules/graph2D/Canvas';
 import { Point, Light, Math3D, Sphere, Cube, Cone, Ellipsoid, Cylinder, ParabolicCylinder, HyperbolicCylinder, EllipticParaboloid, HyperbolicParaboloid } from '../../modules/graph3D';
 import styles from './Graph3D.module.css';
 import useCanvas from '../../hooks/useCanvas';
@@ -154,7 +153,7 @@ const Graph3DComponent = () => {
 		});
 	}
 
-	const moveFigures = (dx, dy, dz) => {
+/* 	const moveFigures = (dx, dy, dz) => {
 		const matrix = math3D.move(dx, dy, dz);
 		figures.forEach((figure) => {
 			if (figure) {
@@ -164,6 +163,7 @@ const Graph3DComponent = () => {
 			}
 		});
 	}
+ */
 
 	const mouseMove = (event) => {
 		if (canMove) {
@@ -287,36 +287,3 @@ const Graph3DComponent = () => {
 }
 
 export default Graph3DComponent;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/* 	<div>
-				<p>.<br></br>
-┋╱╲┋┋┋┊╱▔▔▔▔▔▏<br></br>
-╱┉▍╲┋┋╱┉┉┉┉╱▔<br></br>
-▔╲┉┉╲╱┉┉┉┉╱<br></br>
-┋┋▏┉┉┉┉┉┉╱┋╱▔▔▔▏<br></br>
-┋┋▏┉┉┉┉┉┉╲╱┉┉┉┉▏<br></br>
-&nbsp; ┋┋╲┉ⓅⒺⒶⒸⒺ┉┉┉┉┉╱<br></br>
-┋┋┋╲▂▂▂▂▂▂╱▔▔▔</p>
-Эстерчик, спокойной ночи!1! *цмок*
-<p></p> 
-
-				</div> */

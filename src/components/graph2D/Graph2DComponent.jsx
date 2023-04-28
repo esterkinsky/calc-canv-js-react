@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
-import Canvas from '../../modules/graph2D/Canvas';
+import useCanvas from '../../hooks/useCanvas';
+import UI from './UI';
 
 const Graph2DComponent = () => {
 	const height = window.innerHeight;
@@ -16,58 +17,27 @@ const Graph2DComponent = () => {
 	const funcs = [];
 	let mousePosX = 0;
 	let mousePosY = 0;
-	let canvas, interval;
+	let canvas = null;
+
+	const Canvas = useCanvas(() => renderGraph());
 
 	useEffect(() => {
-		canvas = new Canvas({
+		canvas = Canvas({
 			id: 'graph',
 			WIN: WIN,
 			width: width,
 			height: height,
 			callbacks: {
-				wheel: (event) => wheel(event),
-				mouseUp: () => mouseUp(),
-				mouseDown: () => mouseDown(),
-				mouseMove: (event) => mouseMove(event),
-				mouseLeave: () => mouseLeave(),
+				wheel,
+				mouseUp,
+				mouseDown,
+				mouseMove,
+				mouseLeave,
 			}
 		});
 
-		interval = setInterval(() => {
-			generate();
-			funcs.forEach(func => {
-				if (func) {
-					const { f, color, width, a, b, showDerivative, showIntegral, showZeros } = func;
-					if (f) {
-						printFunction(f, color, width);
-						if (showDerivative) {
-							printDerivative(f, mousePosX);
-						}
-						if ((a || b) && a !== b) {
-							if (showIntegral) {
-								if (a > b) {
-									getIntegral(f, b, a);
-								} else {
-									getIntegral(f, a, b);
-								}
-							}
-							if (showZeros) {
-								if (a > b) {
-									canvas.point(getZero(f, a, b), 0);
-								} else {
-									canvas.point(getZero(f, a, b), 0);
-								}
-							}
-						}
-					}
-				}
-			});
-		}, 15)
-		canvas.renderCanvas();
-
 		return () => {
 			canvas = null;
-			clearInterval(interval);
 		}
 	})
 
@@ -205,32 +175,41 @@ const Graph2DComponent = () => {
 		}
 	}
 
-	const printRect = (event) => {
-		if (event) {
-			const x = Math.floor(canvas.x(event.offsetX));
-			const y = Math.ceil(canvas.y(event.offsetY));
-			canvas.drawRect(x, y, 1, 1, '#dcdcdc');
-			const shiftY = WIN.HEIGHT * 0.01;
-			const shiftX = WIN.WIDTH * 0.01 + 0.02;
-			const nums = [
-				{ x: 0, y: 0, shiftX: -shiftX, shiftY: shiftY },
-				{ x: 0, y: -1, shiftX: -shiftX, shiftY: -shiftY },
-				{ x: 1, y: 0, shiftX: 0, shiftY: shiftY },
-				{ x: 1, y: -1, shiftX: 0, shiftY: -shiftY }
-			];
-			nums.forEach(coord => {
-				canvas.printText(`(${coord.x + x}; ${coord.y + y})`, x + coord.x + coord.shiftX, y + coord.y + coord.shiftY,)
-			})
+	const renderGraph = () => {
+		if (canvas) {
+			canvas.clear()
+			grid();
+			printNums();
+			printOXY();
+			funcs.forEach(func => {
+				if (func) {
+					const { f, color, width, a, b, showDerivative, showIntegral, showZeros } = func;
+					if (f) {
+						printFunction(f, color, width);
+						if (showDerivative) {
+							printDerivative(f, mousePosX);
+						}
+						if ((a || b) && a !== b) {
+							if (showIntegral) {
+								if (a > b) {
+									getIntegral(f, b, a);
+								} else {
+									getIntegral(f, a, b);
+								}
+							}
+							if (showZeros) {
+								if (a > b) {
+									canvas.point(getZero(f, a, b), 0);
+								} else {
+									canvas.point(getZero(f, a, b), 0);
+								}
+							}
+						}
+					}
+				}
+			});
+			canvas.renderCanvas();
 		}
-	}
-
-	const generate = () => {
-		canvas.clear()
-		grid();
-		printNums();
-		printOXY();
-		printRect();
-		canvas.renderCanvas();
 	}
 
 	const changeWidth = (num, width) => {
@@ -280,6 +259,18 @@ const Graph2DComponent = () => {
 	}
 	return (
 		<div>
+			<UI
+				changeWidth={(num, width) => changeWidth(num, width)}
+				changeColor={(num, color) => changeColor(num, color)}
+				addFunction={(num, f) => addFunction(num, f)}
+				changeA={(num, value) => changeA(num, value)}
+				changeB={(num, value) => changeB(num, value)}
+				switchDerivativeCheckBox={(num) => switchDerivativeCheckBox(num)}
+				switchIntegralCheckBox={(num) => switchIntegralCheckBox(num)}
+				switchZerosCheckBox={(num) => switchZerosCheckBox(num)}
+				delFunction={(num) => delFunction(num)}
+				createObjectFunc={(num) => createObjectFunc(num)}
+			/>
 			<canvas id="graph"></canvas>
 		</div>
 	)

@@ -49,37 +49,41 @@ const UI3D = ({
 		return settingsBlock;
 	}
 
+	const switchHandler = (event) => {
+		event.target.classList.toggle(`${styles.switchOn}`);
+	}
+
 	return <>
 		{showPanel && <div className={styles.figuresMenu}>
 			<div className={styles.allows}>
-				<div className="colorSelector">
-					<input id="colorSelector" type="color" defaultValue="#ff88c1" onClick={() => selectColor()} />
+				<div>
+					<input id="colorSelector" type="color" defaultValue="#ebebeb" onChange={() => selectColor()} />
 				</div>
 				<label>
-					<input type="checkbox" id="isPoints" className="Options3D" defaultChecked={show.isPointsAllow} onClick={() => check('isPointsAllow')} />
+					<div type="checkbox" id="isPoints" className={styles.switchBtn} defaultChecked={show.isPointsAllow} onClick={(event) => { check('isPointsAllow'); switchHandler(event) }} />
 					<span className="checkingButtonStyle">Points</span>
 				</label>
 				<label>
-					<input type="checkbox" id="isEdges" className="Options3D" defaultChecked={show.isEdgesAllow} onClick={() => check('isEdgesAllow')} />
+					<div type="checkbox" id="isEdges" className={styles.switchBtn} defaultChecked={show.isEdgesAllow} onClick={(event) => { check('isEdgesAllow'); switchHandler(event) }} />
 					<span className="checkingButtonStyle">Edges</span>
 				</label>
 				<label>
-					<input type="checkbox" id="isPoly" className="Options3D" defaultChecked={show.isPolysAllow} onClick={() => check('isPolysAllow')} />
+					<div type="checkbox" id="isPoly" className={styles.switchBtn} defaultChecked={show.isPolysAllow} onClick={(event) => { check('isPolysAllow'); switchHandler(event) }} />
 					<span className="checkingButtonStyle">Polygons</span>
 				</label>
 				<label>
-					<input type="checkbox" id="isAnimation" className="Options3D" defaultChecked={show.isAnimationAllow} onClick={() => check('isAnimationAllow')} />
+					<div type="checkbox" id="isAnimation" className={styles.switchBtn} defaultChecked={show.isAnimationAllow} onClick={(event) => { check('isAnimationAllow'); switchHandler(event) }} />
 					<span className="checkingButtonStyle">Animation</span>
 				</label>
 				<label>
-					<input type="checkbox" id="isShadow" className="Options3D" defaultChecked={show.isShadow} onClick={() => check('isShadow')} />
+					<div type="checkbox" id="isShadow" className={styles.switchBtn} defaultChecked={show.isShadow} onClick={(event) => { check('isShadow'); switchHandler(event) }} />
 					<span className="checkingButtonStyle">Shadows</span>
 				</label>
 				<div className="powerOfLight">
 					<input id="powerOfLight" type="range" min="5000" defaultValue={LIGHT.lumen} max="50000" step="1000" onInput={() => powerOfLight()} />
 				</div>
 			</div>
-			<div className="add-button">
+			<div className="addButton">
 				{showAddList ? <div>
 					<div onClick={(event) => addFigureHandler(event)} data-figure="Cube">Куб</div>
 					<div onClick={(event) => addFigureHandler(event)} data-figure="Sphere" >Сфера</div>
