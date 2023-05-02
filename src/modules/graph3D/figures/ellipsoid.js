@@ -1,6 +1,6 @@
 import { Point, Edge, Polygon, FigureBody } from '../index'
 
-export class Ellipsoid extends FigureBody {
+export  default class Ellipsoid extends FigureBody {
 	constructor(x = 14, y = 10, z = 14, edgeLines = 20, color) {
 		const edges = [];
 		const points = [];

@@ -1,8 +1,9 @@
-import { Vector, Matrix, Complex, MatrixCalculator, VectorCalculator, ComplexCalculator, RealCalculator } from './index'
+import { Vector, Complex, Matrix } from './index'
+import { MatrixCalculator, VectorCalculator, ComplexCalculator } from './calcs/index'
 
 export default class Calculator {
 	complex(re, im) {
-		return new Complex(re, im)
+		return new Complex(re, im);
 	}
 
 	vector(values) {
@@ -10,6 +11,7 @@ export default class Calculator {
 	}
 
 	matrix(values) {
+		console.log(values)
 		return new Matrix(values);
 	}
 
@@ -60,10 +62,7 @@ export default class Calculator {
 		if (elem instanceof Vector) {
 			return new VectorCalculator(this.get(elem.values[0]));
 		}
-		if (elem instanceof Complex) {
-			return new ComplexCalculator;
-		}
-		return new RealCalculator;
+		return new ComplexCalculator();
 	}
 
 	add(a, b) {
@@ -78,8 +77,8 @@ export default class Calculator {
 		return this.get(a).mult(a, b);
 	}
 
-	divide(a, b) {
-		return this.get(a).divide(a, b);
+	div(a, b) {
+		return this.get(a).div(a, b);
 	}
 
 	prod(p, a) {

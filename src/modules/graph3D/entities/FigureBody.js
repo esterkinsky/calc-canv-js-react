@@ -1,4 +1,4 @@
-export class FigureBody {
+export default class FigureBody {
 	constructor(points = [], edges = [], polygons = [], name = '', color = '#ff37a8') {
 		this.points = points;
 		this.edges = edges;

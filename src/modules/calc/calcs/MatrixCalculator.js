@@ -1,12 +1,12 @@
-import { Matrix } from './index'
+import { Matrix } from '../index'
 
-export class MatrixCalculator {
+export default class MatrixCalculator {
 	constructor(calc) {
 		this.calc = calc;
 	}
 
-	divide() {
-		return 'не определено';
+	div() {
+		return null;
 	}
 
 	add(a, b) {
@@ -33,6 +33,7 @@ export class MatrixCalculator {
 		}
 		return new Matrix(values);
 	}
+
 
 	prod(p, a) {
 		return new Matrix(a.values.map(arr =>

@@ -1,6 +1,6 @@
-import { Point } from './Point';
+import Point from './Point';
 
-export class Polygon {
+export default class Polygon {
 	constructor(points = [], color = '#ebebeb') {
 		this.points = points;
 		this.center = new Point();

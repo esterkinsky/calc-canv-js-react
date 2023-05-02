@@ -1,4 +1,4 @@
-export class Math3D {
+export default class Math3D {
 	constructor({ WIN }) {
 		this.WIN = WIN;
 	};

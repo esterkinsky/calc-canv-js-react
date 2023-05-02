@@ -5,27 +5,22 @@
 }
 
 .containerC {
-	max-width: 300px;
+	max-width: 500px;
 	margin: 2vh 5vh 2vh 5vh;
 	box-shadow: 0px 0px 10px 3px var(--gray);
 }
 
 .number,
-.resultNumber,
-.polyInputA,
-.polyInputB,
-.polyInputX,
-.newPoly,
-.polyResult {
+.resultNumber {
 	border: 0.5px solid var(--gray);
 	width: 100%;
 	max-width: 100%;
 	min-width: 100%;
-	max-height: 120px;
-	min-height: 50px;
+	max-height: 160px;
+	min-height: 55px;
 	text-align: left;
 	border-radius: 5px;
-	height: 45px;
+	height: 55px;
 	font-size: 25px;
 	background-color: var(--gray-light);
 	box-sizing: border-box;
@@ -39,7 +34,7 @@
 	display: grid;
 	border-bottom: 1px solid var(--gray);
 	border-left: 1px solidvar(--gray);
-	grid-template-columns: 1fr 1fr 1fr 1fr;
+	grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
 	border-radius: 5px;
 }
 
@@ -49,9 +44,7 @@
 	border-right: 1px solid var(--gray);
 }
 
-.operands,
-.polyOperand,
-.resultButton {
+.operands {
 	cursor: pointer;
 	font-size: 25px;
 	line-height: 70px;
@@ -78,7 +71,6 @@
 }
 
 .operands:hover,
-.polyOperand:hover,
 .resultButton:hover {
 	background-color: var(--primary-hover);
 	transition: 0.2s;

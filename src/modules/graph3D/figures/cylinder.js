@@ -1,6 +1,6 @@
 import { Point, Edge, Polygon, FigureBody } from '../index'
 
-export class Cylinder extends FigureBody {
+export  default class Cylinder extends FigureBody {
 	constructor(x = 5, y = 10, z = 4, edgeLines = 10, color) {
 		const edges = [];
 		const points = [];

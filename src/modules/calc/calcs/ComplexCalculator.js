@@ -1,7 +1,6 @@
-import { Complex } from './index'
+import { Complex } from '../index'
 
-export class ComplexCalculator {
-
+export default class ComplexCalculator {
 	add(a, b) {
 		return new Complex(a.re + b.re, a.im + b.im);
 	}
@@ -14,11 +13,9 @@ export class ComplexCalculator {
 		return new Complex(a.re * b.re - a.im * b.im, a.re * b.im + a.im * b.re);
 	}
 
-	divide(a, b) {
-		return new Complex(
-			(a.re * b.re + a.im * b.im) / (b.re * b.re + b.im * b.im),
-			(b.re * a.im - a.re * b.im) / (b.re * b.re + b.im * b.im)
-		);
+	div(a, b) {
+		const m = Math.pow(b.re, 2) + Math.pow(b.im, 2);
+		return new Complex((a.re * b.re + a.im * b.im) / m, (a.im * b.re - a.re * b.im) / m);
 	}
 
 	prod(p, a) {
@@ -33,7 +30,11 @@ export class ComplexCalculator {
 		return c;
 	}
 
-	zero() { return new Complex(); }
+	one() {
+		return new Complex();
+	}
 
-	one() { return new Complex(super.one()); }
+	zero() {
+		return new Complex();
+	}
 }

@@ -1,6 +1,6 @@
-import { Point, Edge, Polygon, FigureBody } from '../index'
+import { Point, Edge, Polygon, FigureBody } from '../Entities';
 
-export class Cube extends FigureBody {
+export default class Cube extends FigureBody {
 	constructor(lenght = 10, color) {
 
 		const points = [
@@ -23,8 +23,8 @@ export class Cube extends FigureBody {
 			new Polygon([4, 3, 7, 6]), new Polygon([4, 3, 0, 2]),
 			new Polygon([7, 6, 5, 1]), new Polygon([2, 0, 1, 5])
 		]
-		
-		super( points, edges, polygons, color);
+
+		super(points, edges, polygons, color);
 	}
 
 }

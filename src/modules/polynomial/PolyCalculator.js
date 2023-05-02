@@ -1,4 +1,4 @@
-class PolynomialCalculator {
+class PolyCalculator {
 	polynomial(members) {
 		return new Polynomial(members);
 	}

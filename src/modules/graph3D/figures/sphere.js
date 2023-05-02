@@ -1,6 +1,6 @@
 import { Point, Edge, Polygon, FigureBody } from '../index'
 
-export class Sphere extends FigureBody {
+export  default class  Sphere extends FigureBody {
 	constructor(r = 10, crcs = 20, x = 0, y = 0, z = 0, color) {
 		const points = [];
 		const edges = [];

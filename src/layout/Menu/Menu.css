@@ -21,7 +21,7 @@
 	border: 1px solid var(--gray-light)
 }
 
-.menu-item:hover {
+.menuitem:hover {
 	background-color: var(--primary-hover);
 	transition: 0.2s;
 }

@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import styles from '../graph2D/Graph2D.module.css'
+import '../graph2D/Graph2D.css';
 
 const UI = ({
 	changeColor,
@@ -39,17 +39,17 @@ const UI = ({
 
 		const checkDerivative = document.createElement('div');
 		checkDerivative.dataset.num = num;
-		checkDerivative.className = `${styles.switchBtn}`;
+		checkDerivative.className = 'switchBtn';
 		checkDerivative.addEventListener('click', (event) => switchDerivativeHandler(event))
 
 		const checkIntegral = document.createElement('div');
 		checkIntegral.dataset.num = num;
-		checkIntegral.className = `${styles.switchBtn}`;
+		checkIntegral.className = 'switchBtn';
 		checkIntegral.addEventListener('click', (event) => switchIntegralHandler(event))
 
 		const checkZeros = document.createElement('div');
 		checkZeros.dataset.num = num;
-		checkZeros.className = `${styles.switchBtn}`;
+		checkZeros.className = 'switchBtn';
 		checkZeros.addEventListener('click', (event) => switchZerosHandler(event))
 
 		const funcBlock = document.createElement('div');
@@ -110,29 +110,29 @@ const UI = ({
 	}
 
 	const switchDerivativeHandler = (event) => {
-		event.target.classList.toggle(`${styles.switchOn}`);
+		event.target.classList.toggle(`${'switchOn'}`);
 		switchDerivativeCheckBox(event.target.dataset.num);
 	}
 
 	const switchIntegralHandler = (event) => {
-		event.target.classList.toggle(`${styles.switchOn}`);
+		event.target.classList.toggle(`${'switchOn'}`);
 		switchIntegralCheckBox(event.target.dataset.num);
 	}
 
 	const switchZerosHandler = (event) => {
-		event.target.classList.toggle(`${styles.switchOn}`);
+		event.target.classList.toggle(`${'switchOn'}`);
 		switchZerosCheckBox(event.target.dataset.num);
 	}
 
 	return <>
-		{showPanel && <div className={styles.funcsMenu}>
+		{showPanel && <div className='funcsMenu'>
 			<div className="addButton">
-				<button onClick={() => addFunctionHandler()} className={styles.addFunction}>Add f(x)</button>
-				<div className={styles.funcsContainer} id='funcsContainer'></div>
+				<button onClick={() => addFunctionHandler()} className='addFunction'>Add f(x)</button>
+				<div className='funcsContainer' id='funcsContainer'></div>
 			</div>
 		</div>
 		}
-		<button onClick={showHidePanelHandler} className={styles.funcsListBtn}></button>
+		<button onClick={showHidePanelHandler} className='funcsListBtn'></button>
 	</>
 }
 

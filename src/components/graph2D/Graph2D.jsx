@@ -2,9 +2,9 @@ import { useEffect } from 'react';
 import useCanvas from '../../hooks/useCanvas';
 import UI from './UI';
 
-const Graph2DComponent = () => {
-	const height = window.innerHeight;
-	const width = window.innerWidth;
+const Graph2D = () => {
+	const height = window.innerHeight-100;
+	const width = window.innerWidth-20;
 	const prop = width / height;
 	const WIN = {
 		LEFT: -10 * prop,
@@ -277,4 +277,4 @@ const Graph2DComponent = () => {
 }
 
 
-export default Graph2DComponent;
+export default Graph2D;

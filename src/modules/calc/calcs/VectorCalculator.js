@@ -1,12 +1,12 @@
-import { Vector, Complex, } from './index'
+import { Vector, Complex, } from '../index'
 
-export class VectorCalculator {
+export default class VectorCalculator {
 	constructor(calc) {
 		this.calc = calc;
 	}
 
-	divide() {
-		return 'не определено'
+	div() {
+		return null;
 	}
 
 	add(a, b) {
@@ -22,7 +22,7 @@ export class VectorCalculator {
 			this.calc.sub(this.calc.mult(a.values[1], b.values[2]), this.calc.mult(a.values[2], b.values[1])),
 			this.calc.sub(this.calc.mult(a.values[2], b.values[0]), this.calc.mult(a.values[0], b.values[2])),
 			this.calc.sub(this.calc.mult(a.values[0], b.values[1]), this.calc.mult(a.values[1], b.values[0]))
-		]);
+		])
 	}
 
 	prod(p, a) {
@@ -40,7 +40,7 @@ export class VectorCalculator {
 	one(length) {
 		const values = [];
 		for (let i = 0; i < length; i++) {
-			values.push(this.calc.divide(this.calc.one(), new Complex(Math.sqrt(length))));
+			values.push(this.calc.div(this.calc.one(), new Complex(Math.sqrt(length))));
 		}
 		return new Vector(values);
 	}

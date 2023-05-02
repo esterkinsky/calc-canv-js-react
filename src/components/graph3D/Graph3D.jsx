@@ -1,12 +1,19 @@
 import React, { useEffect } from 'react';
-import UI3D from './UI3D';
-import { Point, Light, Math3D, Sphere, Cube, Cone, Ellipsoid, Cylinder, ParabolicCylinder, HyperbolicCylinder, EllipticParaboloid, HyperbolicParaboloid } from '../../modules/graph3D';
-import styles from './Graph3D.module.css';
+
+import Math3D, { 
+	Point, Light, Sphere, Cube, Cone, Ellipsoid, Cylinder, 
+	ParabolicCylinder, HyperbolicCylinder, EllipticParaboloid, 
+	HyperbolicParaboloid 
+} from '../../modules/graph3D';
 import useCanvas from '../../hooks/useCanvas';
 
-const Graph3DComponent = () => {
-	const width = 1000;
-	const height = 700;
+import UI3D from './UI3D';
+
+import './Graph3D.css';
+
+const Graph3D = () => {
+	const width = 800;
+	const height = 600;
 	const prop = width / height;
 	const figures = [new Cone()];
 	const WIN = {
@@ -27,7 +34,7 @@ const Graph3DComponent = () => {
 		isEdgesAllow: false,
 		isPolysAllow: true,
 		isAnimationAllow: false,
-		isShadow: false,
+		isShadowsAllow: false,
 	}
 
 	setInterval(() => {
@@ -226,7 +233,7 @@ const Graph3DComponent = () => {
 				}
 
 				const { dark } = math3D.calcShadow(polygon, figures, LIGHT);
-				const lumen = math3D.calcIlluminationDistance(polygon.lumen, LIGHT.lumen * (show.isShadow ? dark : 1));
+				const lumen = math3D.calcIlluminationDistance(polygon.lumen, LIGHT.lumen * (show.isShadowsAllow ? dark : 1));
 				var { r, g, b } = polygon.color;
 				r = Math.round(r * lumen);
 				g = Math.round(g * lumen);
@@ -282,8 +289,8 @@ const Graph3DComponent = () => {
 				LIGHT={LIGHT}
 			/>
 		</div>
-		<canvas id="canvas3D" className={styles.graph3d}></canvas>
+		<canvas id="canvas3D" className='graph3d'></canvas>
 	</>
 }
 
-export default Graph3DComponent;
+export default Graph3D;

@@ -1,24 +1,22 @@
 import React, { useState } from 'react';
-import Menu from './layout/menu/Menu';
-import Graph2DComponent from './components/graph2D/Graph2DComponent';
-import Graph3DComponent from './components/graph3D/Graph3DComponent';
-import CalculatorComponent from './components/calc/CalculatorComponent';
+import Menu from './layout/Menu/Menu';
+import { Calculator, Graph2D, Graph3D } from './components';
 
 const App = () => {
 
 	const [showComponent, setshowComponent] = useState('calculatorContent');
 
 	return <>
-		<div className='menu'>
-			<Menu showComponent={setshowComponent} />
-			{showComponent === 'canvasContent' ?
-				<Graph2DComponent /> :
-				showComponent === 'canvas3dContent' ?
-					<Graph3DComponent /> :
-					showComponent === 'calculatorContent' ?
-						<CalculatorComponent /> :
-						<>default</>}
-		</div>
+		<div className='menu'></div>
+		<Menu showComponent={setshowComponent} />
+		{showComponent === 'canvasContent' ?
+			<Graph2D /> :
+			showComponent === 'canvas3dContent' ?
+				<Graph3D /> :
+				showComponent === 'calculatorContent' ?
+					<Calculator /> :
+					<>default</>}
+
 	</>
 };
 

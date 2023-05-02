@@ -1,4 +1,4 @@
-export class Matrix {
+export default class Matrix {
 	constructor(values) {
 		this.values = [];
 		values.forEach((arr, i) => {

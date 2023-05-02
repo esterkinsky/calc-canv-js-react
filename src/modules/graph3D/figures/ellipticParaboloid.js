@@ -1,6 +1,6 @@
 import {Point, Edge, Polygon, FigureBody } from '../index'
 
-export class EllipticParaboloid extends FigureBody {
+export  default class EllipticParaboloid extends FigureBody {
 	constructor(count = 30, color) {
 		const points = [];
 		const edges = [];

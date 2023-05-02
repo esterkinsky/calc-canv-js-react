@@ -1,7 +1,7 @@
 import { Point, Edge, Polygon, FigureBody } from '../index'
 
 
-export class HyperbolicParaboloid extends FigureBody {
+export  default class HyperbolicParaboloid extends FigureBody {
 	constructor(count = 20, color) {
 		const points = [];
 		const polygons = [];

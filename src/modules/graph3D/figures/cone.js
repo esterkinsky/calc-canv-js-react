@@ -1,6 +1,6 @@
 import { Point, Edge, Polygon, FigureBody } from '../index'
 
-export class Cone extends FigureBody {
+export default class Cone extends FigureBody {
 	constructor(count = 20, crcs = 10, rad = 10, color) {
 		const points = [];
 		const edges = [];
