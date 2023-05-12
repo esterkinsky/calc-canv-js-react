@@ -1,4 +1,4 @@
-import Calculator from '../calc/Calculator';
+import { Calculator } from '../../components';
 
 export default class Polynomial {
 	constructor(poly = []) {

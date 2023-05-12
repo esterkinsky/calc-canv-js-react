@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import Menu from './layout/Menu/Menu';
-import { Calculator, Graph2D, Graph3D } from './components';
+import { Graph2D, Graph3D, Calculators } from './components';
 
 const App = () => {
 
-	const [showComponent, setshowComponent] = useState('calculatorContent');
+	const [showComponent, setshowComponent] = useState('canvasContent');
 
 	return <>
 		<div className='menu'></div>
@@ -14,7 +14,8 @@ const App = () => {
 			showComponent === 'canvas3dContent' ?
 				<Graph3D /> :
 				showComponent === 'calculatorContent' ?
-					<Calculator /> :
+					<Calculators />
+					:
 					<>default</>}
 
 	</>

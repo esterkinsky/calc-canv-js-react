@@ -1,4 +1,8 @@
-class PolyCalculator {
+import Polynomial from "./Polynomial";
+import Member from "./Member";
+import Calculator from '../calc';
+
+export default class PolyCalculator {
 	polynomial(members) {
 		return new Polynomial(members);
 	}
@@ -20,7 +24,7 @@ class PolyCalculator {
 			return new Member(arr[0], arr[1]);
 
 		}
-		return new Member;
+		return new Member();
 	}
 
 	getPolynomial(str) {
@@ -34,12 +38,12 @@ class PolyCalculator {
 			const arr3 = arr2.reduce((s, arr) => s.concat(arr), [])
 			return new Polynomial(arr3.map(elem => this.getMember(elem)));
 		}
-		return new Polynomial;
+		return new Polynomial();
 	}
 
 
 	add(a, b) {
-		const calc = new Calculator;
+		const calc = new Calculator();
 		const members = [];
 		a.poly.forEach(elemA => {
 			const member = b.poly.find(elemB =>
@@ -61,7 +65,7 @@ class PolyCalculator {
 	}
 
 	sub(a, b) {
-		const calc = new Calculator;
+		const calc = new Calculator();
 		const members = [];
 		a.poly.forEach(elemA => {
 			const member = b.poly.find(elemB =>
@@ -83,8 +87,8 @@ class PolyCalculator {
 	}
 
 	mult(a, b) {
-		const calc = new Calculator;
-		let polynomial = this.polynomial([new Member]);
+		const calc = new Calculator();
+		let polynomial = this.polynomial([new Member()]);
 		a.poly.forEach(elemA => {
 			const members = [];
 			b.poly.forEach(elemB => {

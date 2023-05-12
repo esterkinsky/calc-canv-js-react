@@ -1,4 +1,5 @@
 import React, { useCallback, useState } from "react";
+import Icons from '../svg/Icons';
 import './Graph3D.css';
 
 const UI3D = ({
@@ -16,12 +17,14 @@ const UI3D = ({
 	const [showPanel, setShowPanel] = useState(false);
 	const [showAddList, setShowAddList] = useState(false);
 
-	const showHidePanelHandler = useCallback(() => {
+	const showHidePanelHandler = useCallback((event) => {
+		event.target.classList.toggle(`${'down'}`);
 		setShowPanel(!showPanel);
 	}, [setShowPanel, showPanel]);
 
 	const showHideAddListHandler = useCallback(() => {
 		setShowAddList(!showAddList);
+		
 	}, [setShowAddList, showAddList]);
 
 	const addFigureHandler = (event) => {
@@ -100,8 +103,13 @@ const UI3D = ({
 				<div className="figuresContainer"></div>
 			</div>
 		</div>}
-		<button onClick={showHidePanelHandler} className='figListBtn'>
-		</button>
+		<label>
+			<div onClick={showHidePanelHandler}>
+				<Icons
+					name='arrow'
+					color='var(--gray)'
+					className='figListBtn'
+				/></div></label >
 	</>
 };
 

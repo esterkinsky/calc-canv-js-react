@@ -25,11 +25,11 @@ const Calculator = () => {
 					<textarea ref={refRes} className='resultNumber' id="resultNumber"></textarea>
 					<div className='buttons'>
 						<button onClick={() => clear()} id="clear" className='clear'>C</button>
-						<button onClick={() => calc('add')} className='operands'> + </button>
-						<button onClick={() => calc('sub')} className='operands' > - </button>
-						<button onClick={() => calc('mult')} className='operands' > * </button>
-						<button onClick={() => calc('div')} className='operands' > / </button>
-						<button onClick={() => calc('pow')} className='operands' >x^y</button>
+						<button onClick={() => calc('add')} className='operands'>x + y</button>
+						<button onClick={() => calc('sub')} className='operands' >x - y</button>
+						<button onClick={() => calc('mult')} className='operands' >x * y</button>
+						<button onClick={() => calc('div')} className='operands' >x / y</button>
+						<button onClick={() => calc('pow')} className='operands' >x ^ y</button>
 					</div>
 				</div>
 			</section>

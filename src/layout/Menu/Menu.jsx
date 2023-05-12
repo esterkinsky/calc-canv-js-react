@@ -8,8 +8,6 @@ const Menu = ({ showComponent }) => {
 			>RPG</button>
 			<button className='menuitem' onClick={() => { showComponent('calculatorContent') }}
 			>Calculator</button>
-			<button className='menuitem' onClick={() => { showComponent('polyContent') }}
-			>Poly calculator</button>
 			<button className='menuitem' onClick={() => { showComponent('canvasContent') }}
 			>Graph2d</button>
 			<button className='menuitem' onClick={() => { showComponent('canvas3dContent') }}

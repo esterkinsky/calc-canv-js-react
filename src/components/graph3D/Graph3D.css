@@ -23,7 +23,6 @@
 }
 
 .figListBtn {
-	background-image: url(../../modules/graph2D/Arrow.svg)center no-repeat;
 	position: absolute;
 	display: flex;
 	flex-direction: column;
@@ -36,11 +35,6 @@
 	left: 0;
 	transition: 0.4s;
 	margin-top: 50px;
-}
-
-.figListBtn:hover {
-	color: var(--white);
-	background-color: var(--primary);
 }
 
 .addFig {
@@ -97,4 +91,14 @@
 
 .switchOn::after {
 	left: 15px;
+}
+
+.arrow {
+	display: inline-block;
+	margin-left: 10px;
+}
+
+.down {
+	transform: rotate(180deg);
+	transition: all 0.2s;
 }

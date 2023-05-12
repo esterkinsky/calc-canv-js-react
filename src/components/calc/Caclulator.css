@@ -1,5 +1,5 @@
 .calcsContainer {
-	display: flex;
+	display: grid;
 	box-sizing: border-box;
 	justify-content: center;
 }
@@ -20,7 +20,7 @@
 	min-height: 55px;
 	text-align: left;
 	border-radius: 5px;
-	height: 55px;
+	height: 85px;
 	font-size: 25px;
 	background-color: var(--gray-light);
 	box-sizing: border-box;
@@ -29,8 +29,7 @@
 	outline: none;
 }
 
-.buttons,
-.calcButtons {
+.buttons {
 	display: grid;
 	border-bottom: 1px solid var(--gray);
 	border-left: 1px solidvar(--gray);
@@ -38,8 +37,7 @@
 	border-radius: 5px;
 }
 
-.buttons>div,
-.calcButtons>div {
+.buttons>div {
 	border-top: 1px solid var(--gray);
 	border-right: 1px solid var(--gray);
 }
@@ -52,6 +50,11 @@
 	background-color: var(--primary);
 	color: var(--white);
 	border-radius: 5px;
+}
+
+.operands:hover {
+	background-color: var(--primary-hover);
+	transition: 0.2s;
 }
 
 .clear {
@@ -67,17 +70,5 @@
 .clear:hover {
 	background-color: var(--white);
 	color: var(--primary-hover);
-	transition: 0.2s;
-}
-
-.operands:hover,
-.resultButton:hover {
-	background-color: var(--primary-hover);
-	transition: 0.2s;
-}
-
-.calc_button:hover {
-	background-color: var(--gray);
-	color: var(--white);
 	transition: 0.2s;
 }
