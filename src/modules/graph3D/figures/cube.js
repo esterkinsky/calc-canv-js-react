@@ -1,4 +1,4 @@
-import { Point, Edge, Polygon, FigureBody } from '../Entities';
+import { Point, Edge, Polygon, FigureBody } from '../entities';
 
 export default class Cube extends FigureBody {
 	constructor(lenght = 10, color) {

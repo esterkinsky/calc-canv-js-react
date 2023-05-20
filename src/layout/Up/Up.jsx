@@ -1,7 +1,8 @@
 import { motion, useAnimation } from 'framer-motion';
 import { useEffect } from 'react';
+import Icons from '../../components/svg/Icons'
 import useScrollY from '../../hooks/useScrollY';
-import './Up.module.css';
+import './Up.css';
 
 const Up = () => {
 	const controls = useAnimation();
@@ -20,11 +21,16 @@ const Up = () => {
 
 	return (
 		<motion.div
-			className='up'
 			animate={controls}
 			initial={{ opacity: 0 }}
 		>
-			<button onClick={scrollToTop}>Наверх</button>
+			<label>
+				<button className='upm' onClick={scrollToTop}>Наверх</button>
+			<Icons 
+					name='arrow'
+					color='var(--gray)'
+			/>
+			</label>
 		</motion.div>
 	);
 };
