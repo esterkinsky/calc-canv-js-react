@@ -1,296 +1,463 @@
-import React, { useEffect } from 'react';
+import { useEffect, useRef } from "react";
 
-import Math3D, { 
-	Point, Light, Sphere, Cube, Cone, Ellipsoid, Cylinder, 
-	ParabolicCylinder, HyperbolicCylinder, EllipticParaboloid, 
-	HyperbolicParaboloid 
+import useCanvas from "../../hooks/useCanvas"
+import Math3D, {
+	Point, Light, Cube, Cone, Cylinder,
+	DoubleCavityHyperboloid, Ellipsoid, EllipticalParaboloid,
+	HyperbolicCylinder, HyperbolicParaboloid, ParabolicCylinder,
+	SingleCavityHyperboloid, Sphere, Tor
 } from '../../modules/graph3D';
-import useCanvas from '../../hooks/useCanvas';
 
-import UI3D from './UI3D';
+import Graph3DUI from "./Graph3DUI/Graph3DUI";
 
 import './Graph3D.css';
 
 const Graph3D = () => {
 	const width = 800;
 	const height = 600;
-	const prop = width / height;
-	const figures = [new Cone()];
+	const proportion = width / height;
+
+	const zoomStep = 1.1;
+
+	const scene = [];
+
 	const WIN = {
-		LEFT: -10 * prop,
-		BOTTOM: -10,
-		WIDTH: 20 * prop,
+		WIDTH: 20 * proportion,
 		HEIGHT: 20,
-		CAMERA: new Point(0, 0, 50),
-		DISPLAY: new Point(0, 0, 30)
-	}
-	const math3D = new Math3D({
-		WIN: WIN
-	});
-	const LIGHT = new Light(-30, 0, 0, 20000);
-
-	const show = {
-		isPointsAllow: true,
-		isEdgesAllow: false,
-		isPolysAllow: true,
-		isAnimationAllow: false,
-		isShadowsAllow: false,
+		BOTTOM: -10,
+		LEFT: -10 * proportion,
+		FOCUS: new Point(0, 0, 20),
+		CAMERA: new Point(0, 0, 30),
 	}
 
-	setInterval(() => {
-		doAnimation()
-	}, 10)
+	const LIGHT = new Light(20, 20, -10);
 
-	let canMove = false;
-	let dx = 0;
-	let dy = 0;
+	const checkBoxes = [
+		{
+			text: 'Точки',
+			onClick: (value) => showHidePoints(value),
+			checked: false,
+		},
+		{
+			text: 'Рёбра',
+			onClick: (value) => showHideEdges(value),
+			checked: false,
+		},
+		{
+			text: 'Полигоны',
+			onClick: (value) => showHidePolygons(value),
+			checked: true,
+		},
+		{
+			text: 'Анимация',
+			onClick: (value) => showHideAnimation(value),
+			checked: false,
+		},
+		{
+			text: 'Тени',
+			onClick: (value) => showHideShadows(value),
+			checked: false,
+		},
+	]
 
-	const canvas1 = useCanvas((FPS) => renderScene(FPS));
-	let canvas = null;
+	const figures = [
+		{
+			name: 'Cube',
+			text: 'Куб',
+		},
+		{
+			name: 'Sphere',
+			text: 'Сфера',
+		},
+		{
+			name: 'Ellipsoid',
+			text: 'Эллипсоид',
+		},
+		{
+			name: 'Cone',
+			text: 'Конус',
+		},
+		{
+			name: 'Cylinder',
+			text: 'Цилиндр',
+		},
+		{
+			name: 'HyperbolicCylinder',
+			text: 'Гиперболический цилиндр',
+		},
+		{
+			name: 'ParabolicCylinder',
+			text: 'Параболический цилиндр',
+		},
+		{
+			name: 'SingleCavityHyperboloid',
+			text: 'Однополостный гиперболоид',
+		},
+		{
+			name: 'DoubleCavityHyperboloid',
+			text: 'Двуполостный гиперболоид',
+		},
+		{
+			name: 'EllipticalParaboloid',
+			text: 'Эллиптический параболоид',
+		},
+		{
+			name: 'HyperbolicParaboloid',
+			text: 'Гиперболический параболоид',
+		},
+		{
+			name: 'Tor',
+			text: 'Тор',
+		},
+	]
+
+	const figuresCallbacks = {
+		changeX: (figure, value) => {
+			figure.centre.x = value;
+			figure.generateFigure();
+		},
+		changeY: (figure, value) => {
+			figure.centre.y = value;
+			figure.generateFigure();
+		},
+		changeZ: (figure, value) => {
+			figure.centre.z = value;
+			figure.generateFigure();
+		},
+		changeColor: (figure, value) => {
+			figure.color = value;
+			figure.generateFigure();
+		},
+		changeSize: (figure, value) => {
+			figure.size = value > 0 ? value : 0;
+			figure.generateFigure();
+		},
+		changeRadius: (figure, value) => {
+			figure.radius = value > 0 ? value : 0;
+			figure.generateFigure();
+		},
+		changeCount: (figure, value) => {
+			figure.count = value >= 3 ? value : 3;
+			figure.generateFigure();
+		},
+		changeHeight: (figure, value) => {
+			figure.height = value > 0 ? value : 0;
+			figure.generateFigure();
+		},
+		changeFocusX: (figure, value) => {
+			figure.focusOx = value;
+			figure.generateFigure();
+		},
+		changeFocusY: (figure, value) => {
+			figure.focusOy = value;
+			figure.generateFigure();
+		},
+		changeFocusZ: (figure, value) => {
+			figure.focusOz = value;
+			figure.generateFigure();
+		},
+		changeInnerRadius: (figure, value) => {
+			figure.innerRadius = value;
+			figure.generateFigure();
+		}
+
+
+	}
+
+	const math3D = new Math3D({ WIN });
+
+	const interval = setInterval(() => {
+		if (checkBoxes[3].checked) {
+			scene.forEach((figure) => {
+				if (figure) {
+					figure.doAnimation(math3D);
+				}
+			})
+		}
+	}, 60);
+
+	const Canvas = useCanvas((FPS) => renderScene(FPS));
+	const canvas = useRef(null);
+
+	let canRotate = false;
 
 	useEffect(() => {
-		canvas = canvas1({
+		canvas.current = Canvas({
 			id: 'canvas3D',
-			WIN: WIN,
-			width: width,
-			height: height,
+			width,
+			height,
+			WIN,
 			callbacks: {
-				wheel: event => wheel(event),
-				mouseMove: event => mouseMove(event),
-				mouseDown: event => mouseDown(event),
-				mouseUp: () => mouseUp(),
-				mouseLeave: () => mouseLeave()
-			}
-		})
+				wheel,
+				mouseUp,
+				mouseDown,
+				mouseMove,
+				mouseLeave,
+				movePoint
+			},
+		});
+
+		addFigure('Конус');
 
 		return () => {
-			canvas = null;
+			clearInterval(interval);
+			canvas.current = null
 		}
 	})
 
-	const doAnimation = () => {
-		if (show.isAnimationAllow === true) {
-			const gradus = -Math.PI / 170;
-			const matrix = math3D.rotateOx(gradus);
-			figures.forEach(figure => {
+	const showHidePoints = (value) => {
+		checkBoxes[0].checked = value;
+	}
+
+	const showHideEdges = (value) => {
+		checkBoxes[1].checked = value;
+	}
+
+	const showHidePolygons = (value) => {
+		checkBoxes[2].checked = value;
+	}
+
+	const showHideAnimation = (value) => {
+		checkBoxes[3].checked = value;
+	}
+
+	const showHideShadows = (value) => {
+		checkBoxes[4].checked = value;
+	}
+
+	const changeLightPower = (value) => {
+		LIGHT.lumen = value;
+	}
+
+	const drawPoints = () => {
+		scene.forEach((figure) => {
+			if (figure) {
+				figure.points.forEach((point) => {
+					canvas.current.point(math3D.xs(point), math3D.ys(point), 'grey', 5);
+				});
+			}
+		});
+	}
+
+	const drawEdges = () => {
+		scene.forEach((figure) => {
+			if (figure) {
+				figure.edges.forEach((edge) => {
+					canvas.current.line(
+						math3D.xs(figure.points[edge.point1]),
+						math3D.ys(figure.points[edge.point1]),
+						math3D.xs(figure.points[edge.point2]),
+						math3D.ys(figure.points[edge.point2]),
+					)
+				});
+			}
+		});
+	}
+
+	const drawPolygons = (polygons) => {
+		polygons.forEach((polygon) => {
+			const points = [];
+
+			for (let i = 0; i < polygon.points.length; i++) {
+				points.push(scene[polygon.figureIndex].points[polygon.points[i]]);
+			}
+
+			let { r, g, b } = polygon.color;
+			const { isShadow, dark } = (checkBoxes[4].checked ?
+				math3D.calcShadow(polygon, scene, LIGHT) : false);
+			const lumen = math3D.calcIllumination(polygon.distance,
+				LIGHT.lumen * (isShadow ? dark : 1));
+			r = Math.round(r * lumen);
+			g = Math.round(g * lumen);
+			b = Math.round(b * lumen);
+
+			canvas.current.polygon(
+				points.map((point) => {
+					return {
+						x: math3D.xs(point),
+						y: math3D.ys(point),
+					};
+				}),
+				polygon.rgbToColor(r, g, b),
+			);
+			// canvas.current.printText(
+			// 	polygon.index,
+			// 	math3D.xs(polygon.centre),
+			// 	math3D.ys(polygon.centre));
+		});
+	}
+
+	const renderScene = (FPS) => {
+		if (canvas.current) {
+			canvas.current.clear();
+
+			if (checkBoxes[2].checked) {
+				const polygons = [];
+				scene.forEach((figure, index) => {
+					if (figure) {
+						math3D.calcCenters(figure);
+
+						if (checkBoxes[4].checked) {
+							math3D.calcRadius(figure);
+						}
+
+						math3D.calcDistance(figure, WIN.CAMERA, 'distance');
+						math3D.calcDistance(figure, LIGHT, 'lumen');
+
+						figure.polygons.forEach((polygon) => {
+							polygon.figureIndex = index;
+							polygons.push(polygon);
+						});
+					}
+				});
+				math3D.sortByArtistAlgoritm(polygons);
+
+				drawPolygons(polygons);
+			}
+
+			if (checkBoxes[1].checked) {
+				drawEdges();
+			}
+
+			if (checkBoxes[0].checked) {
+				drawPoints();
+			}
+
+			canvas.current.renderCanvas();
+		}
+
+	}
+
+	const wheel = (event) => {
+		const delta = (event.wheelDelta > 0) ? zoomStep : 1 / zoomStep;
+		scene.forEach((figure) => {
+			if (figure) {
+				figure.points.forEach((point) => {
+					math3D.transformPoint(math3D.zoom(delta), point);
+				});
+				math3D.transformPoint(math3D.zoom(delta), figure.centre);
+			}
+		})
+	}
+
+	const mouseUp = () => {
+		canRotate = false;
+	}
+
+	const mouseDown = () => {
+		canRotate = true;
+	}
+
+	const mouseMove = (event) => {
+		if (canRotate) {
+			const prop = 240;
+			scene.forEach((figure) => {
 				if (figure) {
-					figure.points.forEach(point => {
-						math3D.transform(matrix, point);
-					});
+					figure.points.forEach((point) => {
+						math3D.transformPoint(math3D.rotateOx(event.movementY / prop), point);
+						math3D.transformPoint(math3D.rotateOy(-event.movementX / prop), point);
+					})
+					math3D.transformPoint(math3D.rotateOx(event.movementY / prop), figure.centre);
+					math3D.transformPoint(math3D.rotateOy(-event.movementX / prop), figure.centre);
 				}
-			});
+			})
+
 		}
 	}
 
-	const addFigure = (figure, num) => {
+	const mouseLeave = () => {
+		canRotate = false;
+	}
+
+	const movePoint = (dx, dy, dz = 0) => {
+		scene.forEach((figure) => {
+			if (figure) {
+				figure.points.forEach((point) => {
+					math3D.transformPoint(math3D.move(dx, dy, dz), point)
+				})
+			}
+		})
+	}
+
+	const addFigure = (figure, num = 0) => {
 		switch (figure) {
-			case 'Cube':
-				figures[num] = new Cube();
+			case "Куб":
+				scene[num] = new Cube({});
 				break;
 
-			case 'Sphere':
-				figures[num] = new Sphere();
+			case "Конус":
+				scene[num] = new Cone({});
 				break;
 
-			case 'Cone':
-				figures[num] = new Cone();
+			case "Цилиндр":
+				scene[num] = new Cylinder({});
 				break;
 
-			case 'Ellipsoid':
-				figures[num] = new Ellipsoid();
+			case "Двуполостный гиперболоид":
+				scene[num] = new DoubleCavityHyperboloid({});
 				break;
 
-			case 'Cylinder':
-				figures[num] = new Cylinder();
+			case "Эллипсоид":
+				scene[num] = new Ellipsoid({});
 				break;
 
-			case 'ParabolicCylinder':
-				figures[num] = new ParabolicCylinder();
+			case "Эллиптический параболоид":
+				scene[num] = new EllipticalParaboloid({});
 				break;
 
-			case 'HyperbolicCylinder':
-				figures[num] = new HyperbolicCylinder();
+			case "Гиперболический цилиндр":
+				scene[num] = new HyperbolicCylinder({});
 				break;
 
-			case 'EllipticParaboloid':
-				figures[num] = new EllipticParaboloid();
+			case "Гиперболический параболоид":
+				scene[num] = new HyperbolicParaboloid({});
 				break;
 
-			case 'HyperbolicParaboloid':
-				figures[num] = new HyperbolicParaboloid();
+			case "Параболический цилиндр":
+				scene[num] = new ParabolicCylinder({});
+				break;
+
+			case "Однополостный гиперболоид":
+				scene[num] = new SingleCavityHyperboloid({});
+				break;
+
+			case "Сфера":
+				scene[num] = new Sphere({});
+				break;
+
+			case "Тор":
+				scene[num] = new Tor({});
 				break;
 
 			default:
 				break;
+
 		}
+		scene[num].index = num;
+
+		scene[num].setAnimation('rotateOy', 0.1, new Point());
+		scene[num].setAnimation('rotateOx', 0.1, new Point());
 	}
 
-	const delFigure = (num) => {
-		figures[num] = null;
+	const deleteFigure = (index) => {
+		scene[index] = null;
 	}
 
-	const check = (name) => {
-		show[name] = !show[name];
-	}
-
-	const powerOfLight = () => {
-		LIGHT.lumen = document.getElementById('powerOfLight').value;
-	}
-
-	const selectColor = () => {
-		figures.forEach(figure => {
-			if (figure) {
-				figure.polygons.forEach(polygon => {
-					polygon.color = polygon.hexToRgb(document.getElementById('colorSelector').value);
-				});
-			}
-		});
-	}
-
-	const wheel = (event) => {
-		event.preventDefault();
-		const delta = (event.wheelDeltaY > 0) ? 1.1 : 0.9;
-		const matrix = math3D.zoom(delta);
-		figures.forEach(figure => {
-			if (figure) {
-				figure.points.forEach(point => {
-					math3D.transform(matrix, point)
-				});
-			}
-		});
-	}
-
-/* 	const moveFigures = (dx, dy, dz) => {
-		const matrix = math3D.move(dx, dy, dz);
-		figures.forEach((figure) => {
-			if (figure) {
-				figure.points.forEach(point => {
-					math3D.transform(matrix, point);
-				});
-			}
-		});
-	}
- */
-
-	const mouseMove = (event) => {
-		if (canMove) {
-			const gradus = Math.PI / 180;
-			const matrixY = math3D.rotateOy((dy - event.offsetY) * gradus);
-			const matrixX = math3D.rotateOx((dx - event.offsetX) * gradus);
-			figures.forEach(figure => {
-				if (figure) {
-					figure.points.forEach(point => {
-						math3D.transform(matrixY, point);
-						math3D.transform(matrixX, point);
-					});
-				}
-			});
-			dx = event.offsetX;
-			dy = event.offsetY;
-		}
-	}
-
-	const mouseDown = (event) => {
-		canMove = true;
-		dx = event.offsetX
-		dy = event.offsetY
-	}
-
-	const mouseLeave = () => {
-		canMove = false;
-	}
-
-	const mouseUp = () => {
-		canMove = false;
-	}
-
-	const renderScene = () => {
-		if(canvas)
-	{	canvas.clear();
-		if (show.isPolysAllow) {
-			const polygons = [];
-			figures.forEach((figure, figureIndex) => {
-				if (figure) {
-					math3D.calcCenters(figure);
-					math3D.normVector(figure);
-					math3D.calcRadius(figure);
-					math3D.calcDistance(figure, WIN.CAMERA, 'distance');
-					math3D.calcDistance(figure, LIGHT, 'lumen');
-					figure.polygons.forEach(polygon => {
-						polygon.figureIndex = figureIndex;
-						polygons.push(polygon);
-					})
-				};
-			});
-
-			math3D.sortByArtistAlgoritm(polygons);
-
-			polygons.forEach((polygon) => {
-				const points = [];
-
-				for (let i = 0; i < polygon.points.length; i++) {
-					points.push(figures[polygon.figureIndex].points[polygon.points[i]]);
-				}
-
-				const { dark } = math3D.calcShadow(polygon, figures, LIGHT);
-				const lumen = math3D.calcIlluminationDistance(polygon.lumen, LIGHT.lumen * (show.isShadowsAllow ? dark : 1));
-				var { r, g, b } = polygon.color;
-				r = Math.round(r * lumen);
-				g = Math.round(g * lumen);
-				b = Math.round(b * lumen);
-				canvas.polygon(points.map(point => {
-					return {
-						x: math3D.xs(point),
-						y: math3D.ys(point)
-					}
-				}), polygon.rgbToColor(r, g, b));
-			})
-		}
-
-		if (show.isEdgesAllow) {
-			figures.forEach(figure => {
-				if (figure) {
-					figure.edges.forEach(edge => {
-						const point1 = figure.points[edge.p1];
-						const point2 = figure.points[edge.p2];
-						canvas.line(
-							math3D.xs(point1),
-							math3D.ys(point1),
-							math3D.xs(point2),
-							math3D.ys(point2),
-							1, 'grey'
-						);
-					});
-				};
-			});
-		}
-
-		if (show.isPointsAllow) {
-			figures.forEach(figure => {
-				if (figure) {
-					figure.points.forEach(point => {
-						canvas.point(math3D.xs(point), math3D.ys(point), 'grey');
-					});
-				}
-			});
-		}
-		canvas.renderCanvas();}
-	}
-
-	return <>
-		<div>
-			<UI3D
-				check={(name) => check(name)}
-				addFigure={(figure, num) => addFigure(figure, num)}
-				delFigure={(num) => delFigure(num)}
-				selectColor={() => selectColor()}
-				show={show}
-				powerOfLight={() => powerOfLight()}
-				LIGHT={LIGHT}
+	return (
+		< >
+			<Graph3DUI
+				checkBoxes={checkBoxes}
+				figuresList={figures}
+				scene={scene}
+				addFigure={addFigure}
+				changeLightPower={changeLightPower}
+				light={LIGHT}
+				figuresCallbacks={figuresCallbacks}
+				deleteFigure={deleteFigure}
 			/>
-		</div>
-		<canvas id="canvas3D" className='graph3d'></canvas>
-	</>
+			<canvas id='canvas3D' className='graph3d'></canvas>
+		</>
+	)
 }
 
 export default Graph3D;

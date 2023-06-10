@@ -1,6 +1,6 @@
 export default class Edge {
-    constructor(p1 = 0, p2 = 0) {
-        this.p1 = p1;
-        this.p2 = p2;
+    constructor(point1, point2) {
+        this.point1 = point1;
+        this.point2 = point2;
     }
 }

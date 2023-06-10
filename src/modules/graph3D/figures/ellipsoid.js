@@ -1,46 +1,87 @@
-import { Point, Edge, Polygon, FigureBody } from '../index'
+import { Figure, Point, Edge, Polygon } from "../entities";
 
-export  default class Ellipsoid extends FigureBody {
-	constructor(x = 14, y = 10, z = 14, edgeLines = 20, color) {
-		const edges = [];
-		const points = [];
-		const polygons = [];
-		const T = Math.PI / edgeLines;
-		const F = 2 * Math.PI / edgeLines;
+export default class Ellipsoid extends Figure {
+	constructor({
+		focusOx = 10,
+		focusOy = 15,
+		focusOz = 20,
+		count = 20,
+		color = '#225533',
+		centre,
+		name = 'Эллипсоид',
+	}) {
+		super({ color, centre, name });
 
-		for (let i = 0; i <= Math.PI; i += T) {
-			for (let j = 0; j < 2 * Math.PI; j += F) {
-				points.push(new Point(
-					x * Math.sin(i) * Math.sin(j),
-					y * Math.cos(i),
-					z * Math.sin(i) * Math.cos(j)
+		this.focusOx = focusOx;
+		this.focusOy = focusOy;
+		this.focusOz = focusOz;
+		this.count = count;
+
+		this.generateFigure();
+	}
+
+	generatePoints() {
+		const propI = 2 * Math.PI / this.count;
+		const propJ = Math.PI / this.count
+		for (let i = 0; i < this.count; i++) {
+			for (let j = 0; j < this.count; j++) {
+				this.points.push(new Point(
+					this.centre.x + this.focusOx * Math.sin(i * propI) * Math.cos(j * propJ),
+					this.centre.y + this.focusOy * Math.cos(i * propI),
+					this.centre.z + this.focusOz * Math.sin(i * propI) * Math.sin(j * propJ),
 				));
 			}
 		}
-
-		for (let i = 0; i < points.length; i++) {
-			if (points[i + 1]) {
-				if ((i + 1) % edgeLines === 0) {
-					edges.push(new Edge(i, i + 1 - edgeLines));
-				} else {
-					edges.push(new Edge(i, i + 1));
-				}
-			}
-			if (points[i + edgeLines]) {
-				edges.push(new Edge(i, i + edgeLines));
-			}
-		}
-		edges.push(new Edge(points.length - edgeLines, points.length - 1));
-
-		for (let i = 0; i < points.length; i++) {
-			if (points[i + edgeLines + 1]) {
-				if ((i + 1) % edgeLines === 0) {
-					polygons.push(new Polygon([i, i - edgeLines + 1, i + 1, i + edgeLines]));
-				} else
-					polygons.push(new Polygon([i, i + 1, i + edgeLines + 1, i + edgeLines]));
-			}
-		}
-		polygons.push(new Polygon([points.length - 1, points.length - edgeLines - 1, points.length - 2 * edgeLines, points.length - edgeLines]));
-		super(points, edges, polygons, color);
 	}
+
+	generateEdges() {
+		for (let i = 0; i < this.count; i++) {
+			const k = i ? i - 1 : i;
+			for (let j = 0; j < this.count - 1; j++) {
+				this.edges.push(new Edge(j + i * this.count, j + i * this.count + 1));
+				this.edges.push(new Edge(j + i * this.count, j + k * this.count));
+			}
+			this.edges.push(new Edge(i * this.count, this.points.length - this.count * k - 1));
+			this.edges.push(new Edge(this.points.length - i * this.count - 1, this.points.length - k * this.count - 1));
+			this.edges.push(new Edge(0, this.points.length - i - 1));
+		}
+	}
+
+	generatePolygons() {
+		for (let i = 0; i < this.count - 1; i++) {
+			for (let j = 0; j < this.count - 1; j++) {
+				this.polygons.push(new Polygon([
+					j + i * this.count,
+					j + 1 + i * this.count,
+					j + 1 + (i + 1) * this.count,
+					j + (i + 1) * this.count,
+				], this.color));
+			}
+
+
+			this.polygons.push(new Polygon([
+				this.points.length - i * this.count - 1,
+				this.points.length - (i ? i - 1 : i) * this.count - 1,
+				i * this.count,
+				(i + 1) * this.count,
+			], this.color));
+
+
+			this.polygons.push(new Polygon([
+				0,
+				this.points.length - i - 1,
+				this.points.length - i - 2,
+				0,
+			], this.color))
+		}
+
+
+		this.polygons.push(new Polygon([
+			0,
+			this.points.length - this.count,
+			this.count * 2 - 1,
+			0,
+		], this.color))
+	}
+
 }

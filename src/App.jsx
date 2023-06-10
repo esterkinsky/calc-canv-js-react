@@ -4,7 +4,7 @@ import { Graph2D, Graph3D, Calculators } from './components';
 
 const App = () => {
 
-	const [showComponent, setshowComponent] = useState('canvasContent');
+	const [showComponent, setshowComponent] = useState('canvas3dContent');
 
 	return <>
 		<div className='menu'></div>

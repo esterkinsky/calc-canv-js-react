@@ -1,43 +1,84 @@
-import { Point, Edge, Polygon, FigureBody } from '../index'
+import { Figure, Point, Edge, Polygon } from "../entities";
 
-export default class Cone extends FigureBody {
-	constructor(count = 20, crcs = 10, rad = 10, color) {
-		const points = [];
-		const edges = [];
-		const polygons = [];
+export default class Cone extends Figure {
+	constructor({
+		radius = 10,
+		height = 10,
+		count = 20,
+		color = '#335544',
+		name = 'Конус',
+		centre
+	}) {
+		super({ color, centre, name });
 
-		for (let beta = Math.PI / 2; beta >= -Math.PI; beta -= Math.PI / crcs) {
-			let r = Math.cos(beta) * rad;
-			for (let alpha = 0; alpha < Math.PI * 2; alpha += Math.PI / count * 2) {
-				let x = Math.cos(alpha) * r;
-				let y = r;
-				let z = Math.sin(alpha) * r;
-				points.push(new Point(x, y, z));
+		this.radius = radius;
+		this.height = height;
+		this.count = count;
+
+		this.generateFigure();
+	}
+
+	generatePoints() {
+		const propRadius = this.radius / this.count;
+		const propAlpha = 2 * Math.PI / this.count;
+		const propHeight = this.height / this.count;
+		for (let i = 0; i < this.count; i++) {
+			for (let j = 0; j < this.count; j++) {
+				this.points.push(new Point(
+					this.centre.x + i * propRadius * Math.cos(j * propAlpha),
+					this.centre.y + i * propHeight,
+					this.centre.z + i * propRadius * Math.sin(j * propAlpha),
+				))
 			}
 		}
 
-		for (let i = 0; i < points.length; i++) {
-			if (i % count === 0 && i !== 0) {
-				edges.push(new Edge(i, i + 1));
-			} else {
-				if (i + 1 < points.length && (i + 1) % count !== 0) {
-					edges.push(new Edge(i, i + 1));
-				} else {
-					edges.push(new Edge(i, i + 1 - count));
-				}
-			}
-			if (i + count < points.length) {
-				edges.push(new Edge(i, i + count));
+		for (let i = 0; i < this.count; i++) {
+			for (let j = 0; j < this.count; j++) {
+				this.points.push(new Point(
+					this.centre.x + i * propRadius * Math.cos(j * propAlpha),
+					this.centre.y - i * propHeight,
+					this.centre.z + i * propRadius * Math.sin(j * propAlpha),
+				))
 			}
 		}
-		
-		for (let i = 0; i < points.length; i++) {
-			if ((i + 1 + count) < points.length && ((i + 1) % count) !== 0) {
-				polygons.push(new Polygon([i, i + 1, i + 1 + count, i + count], color));
-			} else if ((i + count) < points.length && ((i + 1) % count) === 0) {
-				polygons.push(new Polygon([i, i - count + 1, i + 1, i + count], color));
+	}
+
+	generateEdges() {
+		for (let i = 0; i < this.count * 2; i++) {
+			const k = i ? i * this.count - 1 : i;
+			for (let j = 0; j < this.count - 1; j++) {
+				this.edges.push(new Edge(j + i * this.count, j + i * this.count + 1));
+				this.edges.push(new Edge((i ? i - 1 : i) * this.count + j, i * this.count + j))
+			}
+			this.edges.push(new Edge(i * this.count, (i + 1) * this.count - 1));
+			this.edges.push(new Edge(k, k + this.count));
+		}
+	}
+
+	generatePolygons() {
+		let whiteCol = true;
+		for (let i = 0; i < this.count * 2 - 1; i++) {
+			let whiteRow = whiteCol;
+			whiteCol = (i % 3) ? whiteCol : !whiteCol;
+
+			for (let j = 0; j < this.count - 1; j++) {
+				if ((j + 1) % 3 || (i + 1) % 3) {
+
+				this.polygons.push(new Polygon([
+					i * this.count + j,
+					(i + 1) * this.count + j,
+					(i + 1) * this.count + j + 1,
+					i * this.count + j + 1,
+				], whiteRow ? '#ffffff' : '#000000'));
+				whiteRow = (j % 3) ? whiteRow : !whiteRow;
 			}
 		}
-		super(points, edges, polygons, color);
+			this.polygons.push(new Polygon([
+				i * this.count,
+				(i + 1) * this.count - 1,
+				(i + 2) * this.count - 1,
+				(i + 1) * this.count,
+			], whiteRow ? '#ffffff' : '#000000'));
+		}
 	}
 }

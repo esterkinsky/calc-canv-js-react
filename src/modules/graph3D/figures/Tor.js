@@ -1,32 +1,32 @@
 import { Figure, Point, Edge, Polygon } from "../entities";
 
-export default class Cylinder extends Figure {
+export default class Tor extends Figure {
     constructor({
-        color = '#9278b0',
-        centre,
-        height = 20,
-        count = 20,
+        innerRadius = 20,
         radius = 10,
-        name = 'Цилиндр',
+        count = 20,
+        color = '#482153',
+        centre,
+        name = 'Тор',
     }) {
         super({ color, centre, name });
-        this.count = count;
-        this.radius = radius;
-        this.height = height;
 
-        this.generateFigure();
+        this.innerRadius = innerRadius;
+        this.radius = radius;
+        this.count = count;
+
+        this.generateFigure()
     }
 
     generatePoints() {
-        const propI = this.height / this.count;
-        const propJ = 2 * Math.PI / this.count;
-
-        for (let i = -this.count / 2; i < this.count / 2; i++) {
+        const sizeProp = 0.5;
+        const prop = 2 * Math.PI / this.count;
+        for (let i = 0; i < this.count; i++) {
             for (let j = 0; j < this.count; j++) {
                 this.points.push(new Point(
-                    this.centre.x + this.radius * Math.cos(j * propJ),
-                    this.centre.y + i * propI,
-                    this.centre.z + this.radius * Math.sin(j * propJ),
+                    this.centre.x + sizeProp * (this.innerRadius + this.radius * Math.cos(i * prop)) * Math.cos(j * prop),
+                    this.centre.y + sizeProp * this.radius * Math.sin(i * prop),
+                    this.centre.z + sizeProp * (this.innerRadius + this.radius * Math.cos(i * prop)) * Math.sin(j * prop),
                 ));
             }
         }
@@ -39,8 +39,9 @@ export default class Cylinder extends Figure {
                 this.edges.push(new Edge(i * this.count + j, i * this.count + j + 1));
                 this.edges.push(new Edge((i ? i - 1 : i) * this.count + j, i * this.count + j));
             }
-            this.edges.push(new Edge(k, k + this.count));
             this.edges.push(new Edge(i * this.count, (i + 1) * this.count - 1));
+            this.edges.push(new Edge(k, k + this.count));
+            this.edges.push(new Edge(i, this.points.length - this.count + i));
         }
     }
 
@@ -61,6 +62,20 @@ export default class Cylinder extends Figure {
                 (i + 2) * this.count - 1,
                 (i + 1) * this.count,
             ], this.color));
+
+            this.polygons.push(new Polygon([
+                i,
+                this.points.length - this.count + i,
+                this.points.length - this.count + i + 1,
+                i + 1,
+            ], this.color))
         }
+
+        this.polygons.push(new Polygon([
+            this.points.length - 1,
+            this.points.length - this.count,
+            0,
+            this.count - 1,
+        ], this.color));
     }
 }

@@ -1,33 +1,141 @@
-import { Point, Edge, Polygon, FigureBody } from '../index'
+import { Figure, Point, Edge, Polygon } from "../entities";
 
-export  default class HyperbolicCylinder extends FigureBody {
-	constructor(count = 20, color) {
-		const points = [];
-		const polygons = [];
-		const edges = [];
-		const size = 20;
-		const delta = size / count;
+export default class HyperbolicCylinder extends Figure {
+	constructor({
+		color = '#41a7b4',
+		centre,
+		count = 15,
+		focusOx = 5,
+		focusOy = 5,
+		focusOz = 8,
+		name = 'Гиперболический цилиндр',
+	}) {
+		super({ color, centre, name });
 
-		for (let i = 0; i < count; i++) {
-			for (let j = 0; j < count; j++) {
-				const x = i * delta - size / 2;
-				const z = j * delta;
-				let y = 5 / x;
-				points.push(new Point(x, y, z));
+		this.count = count;
+		this.focusOx = focusOx;
+		this.focusOy = focusOy;
+		this.focusOz = focusOz;
+
+		this.generateFigure();
+	}
+
+	generatePoints() {
+		const propI = 2 * Math.PI / this.count;
+		const propJ = 10 * this.focusOz / this.count;
+		const halfCount = this.count / 2;
+		const sizeProp = 0.3;
+
+		for (let i = 0; i < this.count; i++) {
+			for (let j = 0; j < this.count; j++) {
+				this.points.push(new Point(
+					this.centre.x + sizeProp * this.focusOx * Math.cosh((i - halfCount) * propI),
+					this.centre.y + sizeProp * (j - halfCount) * propJ,
+					this.centre.z + sizeProp * this.focusOy * Math.sinh((i - halfCount) * propI),
+				));
 			}
 		}
 
-		for (let i = 0; i < points.length; i++) {
-			if (i + 1 < points.length && (i + 1) % count !== 0) {
-				edges.push(new Edge(i, i + 1));
-			}
-			if (i + count < points.length) {
-				edges.push(new Edge(i, i + count));
-			}
-			if (i + 1 + count < points.length && (i + 1) % count !== 0) {
-				polygons.push(new Polygon([i, i + 1, i + 1 + count, i + count]));
+		for (let i = 0; i < this.count; i++) {
+			for (let j = 0; j < this.count; j++) {
+				this.points.push(new Point(
+					this.centre.x - sizeProp * this.focusOx * Math.cosh((i - halfCount) * propI),
+					this.centre.y + sizeProp * (j - halfCount) * propJ,
+					this.centre.z + sizeProp * this.focusOy * Math.sinh((i - halfCount) * propI),
+				));
 			}
 		}
-		super(points, edges, polygons, color);
+	}
+
+	generateEdges() {
+		const sqrCount = Math.pow(this.count, 2);
+		for (let i = 0; i < this.count; i++) {
+			const k = i ? i * this.count - 1 : i;
+			for (let j = 0; j < this.count - 1; j++) {
+				this.edges.push(new Edge(i * this.count + j, i * this.count + j + 1));
+				this.edges.push(new Edge((i ? i - 1 : i) * this.count + j, i * this.count + j));
+				this.edges.push(new Edge(i * this.count + sqrCount + j, i * this.count + sqrCount + j + 1));
+				this.edges.push(new Edge((i ? i - 1 : i) * this.count + sqrCount + j, i * this.count + sqrCount + j));
+			}
+			this.edges.push(new Edge(k, k + this.count));
+			this.edges.push(new Edge(k + sqrCount, k + sqrCount + this.count));
+		}
+	}
+
+	generatePolygons() {
+		const sqrCount = Math.pow(this.count, 2);
+
+		for (let i = 0; i < this.count - 1; i = i + 2) {
+			for (let j = 0; j < this.count - 1; j = j + 2) {
+				this.polygons.push(new Polygon([
+					i * this.count + j,
+					(i + 1) * this.count + j,
+					(i + 1) * this.count + j + 1,
+					i * this.count + j + 1,
+				], this.color));
+
+				this.polygons.push(new Polygon([
+					i * this.count + sqrCount + j,
+					(i + 1) * this.count + sqrCount + j,
+					(i + 1) * this.count + sqrCount + j + 1,
+					i * this.count + sqrCount + j + 1,
+				], this.color));
+			}
+		}
+
+		for (let i = 1; i < this.count - 1; i = i + 2) {
+			for (let j = 1; j < this.count - 1; j = j + 2) {
+				this.polygons.push(new Polygon([
+					i * this.count + j,
+					(i + 1) * this.count + j,
+					(i + 1) * this.count + j + 1,
+					i * this.count + j + 1,
+				], this.color));
+
+				this.polygons.push(new Polygon([
+					i * this.count + sqrCount + j,
+					(i + 1) * this.count + sqrCount + j,
+					(i + 1) * this.count + sqrCount + j + 1,
+					i * this.count + sqrCount + j + 1,
+				], this.color));
+			}
+		}
+
+		for (let i = 0; i < this.count - 1; i = i + 2) {
+			for (let j = 1; j < this.count - 1; j = j + 2) {
+				this.polygons.push(new Polygon([
+					i * this.count + j,
+					(i + 1) * this.count + j,
+					(i + 1) * this.count + j + 1,
+					i * this.count + j + 1,
+				], '#fffeee'));
+
+				this.polygons.push(new Polygon([
+					i * this.count + sqrCount + j,
+					(i + 1) * this.count + sqrCount + j,
+					(i + 1) * this.count + sqrCount + j + 1,
+					i * this.count + sqrCount + j + 1,
+				],'#fffeee'));
+			}
+		}
+
+		for (let i = 1; i <= this.count - 1; i = i + 2) {
+			for (let j = 0; j < this.count - 1; j = j + 2) {
+				this.polygons.push(new Polygon([
+					i * this.count + j,
+					(i + 1) * this.count + j,
+					(i + 1) * this.count + j + 1,
+					i * this.count + j + 1,
+				], '#fffeee'));
+
+				this.polygons.push(new Polygon([
+					i * this.count + sqrCount + j,
+					(i + 1) * this.count + sqrCount + j,
+					(i + 1) * this.count + sqrCount + j + 1,
+					i * this.count + sqrCount + j + 1,
+				], '#fffeee'));
+			}
+		}
+
 	}
 }

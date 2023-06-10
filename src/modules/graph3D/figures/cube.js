@@ -1,30 +1,57 @@
-import { Point, Edge, Polygon, FigureBody } from '../entities';
+import { Figure, Point, Edge, Polygon } from "../entities";
 
-export default class Cube extends FigureBody {
-	constructor(lenght = 10, color) {
+export default class Cube extends Figure {
+    constructor({
+        color = '#ee8844',
+        size = 10,
+        centre,
+        name = 'Куб',
+    }) {
+        super({ color, centre, name });
+        this.size = size;
 
-		const points = [
-			new Point(lenght, lenght, lenght), new Point(lenght, -lenght, lenght),
-			new Point(-lenght, lenght, lenght), new Point(lenght, lenght, -lenght),
-			new Point(-lenght, lenght, -lenght), new Point(-lenght, -lenght, lenght),
-			new Point(-lenght, -lenght, -lenght), new Point(lenght, -lenght, -lenght)
-		];
+        this.generateFigure();
+    }
 
-		const edges = [
-			new Edge(0, 1), new Edge(0, 2), new Edge(0, 3),
-			new Edge(4, 2), new Edge(4, 3),
-			new Edge(5, 1), new Edge(5, 2),
-			new Edge(6, 5), new Edge(6, 4),
-			new Edge(7, 6), new Edge(7, 3), new Edge(7, 1)
-		];
+    generatePoints() {
+        const size = this.size / 2;
+        this.points = [
+            new Point(size + this.centre.x, size + this.centre.y, size + this.centre.z),
+            new Point(-size + this.centre.x, size + this.centre.y, size + this.centre.z),
+            new Point(size + this.centre.x, -size + this.centre.y, size + this.centre.z),
+            new Point(-size + this.centre.x, -size + this.centre.y, size + this.centre.z),
+            new Point(size + this.centre.x, size + this.centre.y, -size + this.centre.z),
+            new Point(size + this.centre.x, -size + this.centre.y, -size + this.centre.z),
+            new Point(-size + this.centre.x, size + this.centre.y, -size + this.centre.z),
+            new Point(-size + this.centre.x, -size + this.centre.y, -size + this.centre.z),
+        ];
+    }
 
-		const polygons = [
-			new Polygon([3, 0, 1, 7]), new Polygon([6, 5, 2, 4]),
-			new Polygon([4, 3, 7, 6]), new Polygon([4, 3, 0, 2]),
-			new Polygon([7, 6, 5, 1]), new Polygon([2, 0, 1, 5])
-		]
+    generateEdges() {
+        this.edges = [
+            new Edge(0, 4),
+            new Edge(0, 1),
+            new Edge(0, 2),
+            new Edge(6, 1),
+            new Edge(6, 4),
+            new Edge(6, 7),
+            new Edge(5, 7),
+            new Edge(5, 4),
+            new Edge(5, 2),
+            new Edge(3, 7),
+            new Edge(3, 2),
+            new Edge(3, 1),
+        ];
+    }
 
-		super(points, edges, polygons, color);
-	}
-
+    generatePolygons() {
+        this.polygons = [
+            new Polygon([0, 1, 3, 2], this.color),
+            new Polygon([0, 1, 6, 4], this.color),
+            new Polygon([0, 2, 5, 4], this.color),
+            new Polygon([2, 3, 7, 5], this.color),
+            new Polygon([3, 1, 6, 7], this.color),
+            new Polygon([4, 5, 7, 6], this.color),
+        ]
+    }
 }

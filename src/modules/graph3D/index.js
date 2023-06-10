@@ -1,6 +1,9 @@
 import Math3D from './Math3D';
-
-export { Point, Edge, Polygon, Light, FigureBody } from './entities';
-export { Cube, Sphere, Cone, Cylinder, Ellipsoid, EllipticParaboloid, HyperbolicCylinder, HyperbolicParaboloid, ParabolicCylinder } from './figures';
-
+export { Point, Edge, Polygon, Light, Figure } from './entities';
+export {
+    Cube, Cone, Cylinder,
+    DoubleCavityHyperboloid, Ellipsoid, EllipticalParaboloid,
+    HyperbolicCylinder, HyperbolicParaboloid, ParabolicCylinder,
+    SingleCavityHyperboloid, Sphere, Tor
+} from './figures';
 export default Math3D;

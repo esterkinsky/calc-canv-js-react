@@ -1,11 +1,20 @@
-import Cube from './cube';
-import Cone from './cone';
-import Cylinder from './cylinder';
-import Ellipsoid from './ellipsoid';
-import EllipticParaboloid from './ellipticParaboloid';
-import HyperbolicCylinder from './hyperbolicCylinder';
-import HyperbolicParaboloid  from './hyperbolicParaboloid';
-import ParabolicCylinder from './parabolicCylinder';
-import Sphere from './sphere'
- 
-export { Cube, Cone, Cylinder, EllipticParaboloid, Ellipsoid, HyperbolicCylinder, HyperbolicParaboloid, ParabolicCylinder, Sphere };
+import Cube from './Cube';
+import Cone from './Cone';
+import Cylinder from './Cylinder';
+import DoubleCavityHyperboloid from './DoubleCavityHyperboloid';
+import Ellipsoid from './Ellipsoid';
+import EllipticalParaboloid from './EllipticalParaboloid';
+import HyperbolicCylinder from './HyperbolicCylinder';
+import HyperbolicParaboloid from './HyperbolicParaboloid';
+import ParabolicCylinder from './ParabolicCylinder';
+import SingleCavityHyperboloid from './SingleCavityHyperboloid';
+import Sphere from './Sphere';
+import Tor from './Tor';
+
+export {
+    Cube, Cone, Cylinder,
+    DoubleCavityHyperboloid, Ellipsoid, EllipticalParaboloid,
+    HyperbolicCylinder, HyperbolicParaboloid, ParabolicCylinder,
+    SingleCavityHyperboloid, Sphere, Tor
+};
+

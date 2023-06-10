@@ -22,25 +22,25 @@ export default class Canvas {
 		this.canvas.addEventListener('mouseleave', mouseLeave);
 	};
 
-	xs = (x) => (x - this.WIN.LEFT) / this.WIN.WIDTH * this.canvas.width;
-	ys = (y) => this.canvas.height - (y - this.WIN.BOTTOM) / this.WIN.HEIGHT * this.canvas.height;
+	xs(x) { return (x - this.WIN.LEFT) / this.WIN.WIDTH * this.canvas.width; }
+	ys(y) { return this.canvas.height - (y - this.WIN.BOTTOM) / this.WIN.HEIGHT * this.canvas.height; }
 
-	sx = (x) => x * this.WIN.WIDTH / this.canvas.width;
-	sy = (y) => -y * this.WIN.HEIGHT / this.canvas.height;
+	sx(x) { return x * this.WIN.WIDTH / this.canvas.width; }
+	sy(y) { return -y * this.WIN.HEIGHT / this.canvas.height; }
 
-	drawRect = (x, y, width, height, color = '#ebebeb') => {
+	drawRect(x, y, width, height, color = '#ebebeb') {
 		const heightRect = height * this.canvas.height / this.WIN.HEIGHT;
 		const widthRect = width * this.canvas.width / this.WIN.WIDTH;
 		this.contextVirtual.fillStyle = color;
 		this.contextVirtual.fillRect(this.xs(x), this.ys(y), widthRect, heightRect);
 	};
 
-	clear = () => {
+	clear() {
 		this.contextVirtual.fillStyle = '#ebebeb';
 		this.contextVirtual.fillRect(0, 0, this.canvas.width, this.canvas.height);
 	};
 
-	line = (x1, y1, x2, y2, width = 1, color = '#787d85', isDash = false) => {
+	line(x1, y1, x2, y2, width = 1, color = '#787d85', isDash = false) {
 		this.contextVirtual.beginPath();
 		this.contextVirtual.strokeStyle = color;
 		this.contextVirtual.moveTo(this.xs(x1), this.ys(y1));
@@ -56,13 +56,13 @@ export default class Canvas {
 		this.contextVirtual.closePath();
 	};
 
-	printText = (text, x, y, color = '#A4A4A4', size = NaN) => {
+	printText(text, x, y, color = '#A4A4A4', size = NaN) {
 		this.contextVirtual.font = `${size}px serif`;
 		this.contextVirtual.fillStyle = color;
 		this.contextVirtual.fillText(text, this.xs(x), this.ys(y));
 	};
 
-	point = (x, y, color = 'grey', size = 5) => {
+	point(x, y, color = 'grey', size = 5) {
 		this.contextVirtual.beginPath();
 		this.contextVirtual.arc(this.xs(x), this.ys(y), size, 0, 2 * Math.PI);
 		this.contextVirtual.fillStyle = color;
@@ -70,7 +70,7 @@ export default class Canvas {
 		this.contextVirtual.closePath();
 	};
 
-	polygon = (points = [], color = '#f003') => {
+	polygon(points = [], color = '#f003') {
 		if (points.length >= 3) {
 			this.contextVirtual.fillStyle = color;
 			this.contextVirtual.strokeStyle = color;
@@ -86,7 +86,7 @@ export default class Canvas {
 		};
 	};
 
-	renderCanvas = () => {
+	renderCanvas() {
 		this.context.drawImage(this.canvasVirtual, 0, 0);
 	}
 

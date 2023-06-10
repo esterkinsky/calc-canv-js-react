@@ -1,33 +1,36 @@
 import { Figure, Point, Edge, Polygon } from "../entities";
 
-export default class Cylinder extends Figure {
+export default class EllipticalParaboloid extends Figure {
     constructor({
-        color = '#9278b0',
+        color = '#fef941',
         centre,
-        height = 20,
         count = 20,
-        radius = 10,
-        name = 'Цилиндр',
+        height = 15,
+        focusOx = 4,
+        focusOy = 3,
+        focusOz = 5,
+        name = 'Эллиптический параболоид',
     }) {
         super({ color, centre, name });
-        this.count = count;
-        this.radius = radius;
         this.height = height;
+        this.focusOx = focusOx;
+        this.focusOy = focusOy;
+        this.focusOz = focusOz;
+        this.count = count;
 
         this.generateFigure();
     }
 
     generatePoints() {
-        const propI = this.height / this.count;
         const propJ = 2 * Math.PI / this.count;
-
-        for (let i = -this.count / 2; i < this.count / 2; i++) {
+        const propI = this.height / this.count * 0.1;
+        for (let i = 0; i < this.count; i++) {
             for (let j = 0; j < this.count; j++) {
                 this.points.push(new Point(
-                    this.centre.x + this.radius * Math.cos(j * propJ),
-                    this.centre.y + i * propI,
-                    this.centre.z + this.radius * Math.sin(j * propJ),
-                ));
+                    this.centre.x + this.focusOx * i * propI * Math.cos(j * propJ),
+                    this.centre.y + this.focusOy * Math.pow(i * propI, 2),
+                    this.centre.z + this.focusOz * i * propI * Math.sin(j * propJ),
+                ))
             }
         }
     }

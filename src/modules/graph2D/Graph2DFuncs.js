@@ -4,11 +4,11 @@ export default class Graph2DFuncs {
 		this.canvas = canvas;
 	} 
 
-	getDerivative = (f, x0, dx = 0.00001) => {
+	getDerivative  (f, x0, dx = 0.00001)  {
 		return (f(x0 + dx) - f(x0)) / dx;
 	}
 
-	printDerivative = (f, x) => {
+	printDerivative (f, x) {
 		const dx = Math.pow(10, -9),
 			k = (f(x + dx) - f(x)) / dx,
 			b = f(x) - k * x,
@@ -48,14 +48,20 @@ export default class Graph2DFuncs {
 		}
 	}
 
-	printNums = () => {
-		const shiftY = -this.WIN.HEIGHT * 0.01 - 0.04;
-		const shiftX = this.WIN.WIDTH * 0.001 + 0.04;
-		for (let i = Math.round(this.WIN.LEFT); i < this.WIN.LEFT + this.WIN.WIDTH; i++) {
-			this.canvas.printText(i, i + shiftX, shiftY,);
+	printNums() {
+		const { LEFT, BOTTOM, WIDTH, HEIGHT } = this.WIN;
+		const streakLength = HEIGHT / (WIDTH + 30);
+		const len = streakLength / 2;
+		const shiftY = -HEIGHT * 0.01 - 0.04;
+		const shiftX = WIDTH * 0.001 + 0.04;
+
+		for (let i = Math.round(LEFT); i < LEFT + WIDTH; i++) {
+			this.canvas.line(i, len, i, -len, 2.5);
+			this.canvas.printText(i, i + shiftX, shiftY);
 		}
-		for (let i = Math.round(this.WIN.BOTTOM); i < this.WIN.BOTTOM + this.WIN.HEIGHT; i++) {
-			this.canvas.printText(i, shiftX, i + shiftY,);
+		for (let i = Math.round(BOTTOM); i < BOTTOM + HEIGHT; i++) {
+			this.canvas.line(len, i, -len, i, 2.5);
+			this.canvas.printText(i, shiftX, i + shiftY);
 		}
 	}
 

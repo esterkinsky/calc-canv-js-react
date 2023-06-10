@@ -1,37 +1,58 @@
-import { Point, Edge, Polygon, FigureBody } from '../index'
+import { Figure, Point, Edge, Polygon } from "../entities";
 
+export default class HyperbolicParaboloid extends Figure {
+    constructor({
+        color = '#adaaea',
+        centre,
+        count = 20,
+        focusOx = 4,
+        focusOz = 3,
+        name = 'Гиперболический параболоид',
+    }) {
+        super({ color, centre, name });
+        this.focusOx = focusOx;
+        this.focusOz = focusOz;
+        this.count = count;
 
-export  default class HyperbolicParaboloid extends FigureBody {
-	constructor(count = 20, color) {
-		const points = [];
-		const polygons = [];
-		const edges = [];
-		const size = 20;
-		const delta = size / count;
+        this.generateFigure();
+    }
+    generatePoints() {
+        const prop = 2 * Math.PI / this.count;
+        const a = Math.sqrt(2 * this.focusOx);
+        const b = Math.sqrt(2 * this.focusOz);
+        const count = this.count / 2;
+        for (let i = -count; i < count; i++) {
+            for (let j = -count; j < count; j++) {
+                this.points.push(new Point(
+                    this.centre.x + i * prop * a,
+                    this.centre.y + Math.pow(i * prop, 2) - Math.pow(j * prop, 2),
+                    this.centre.z + j * prop * b,
+                ));
+            }
+        }
+    }
 
-		for (let i = 0; i < count; i++) {
-			for (let j = 0; j < count; j++) {
-				const x = i * delta - size / 2;
-				const y = j * delta - size / 2;
-				const z = (x * x - y * y) / (0.5 * size);
-				points.push(new Point(x, y, z));
-			}
-		}
+    generateEdges() {
+        for (let i = 0; i < this.count; i++) {
+            const k = i ? i * this.count - 1 : i;
+            for (let j = 0; j < this.count - 1; j++) {
+                this.edges.push(new Edge(i * this.count + j, i * this.count + j + 1));
+                this.edges.push(new Edge((i ? i - 1 : i) * this.count + j, i * this.count + j));
+            }
+            this.edges.push(new Edge(k, k + this.count));
+        }
+    }
 
-		for (let i = 0; i < points.length; i++) {
-			if (i + 1 < points.length && (i + 1) % count !== 0) {
-				edges.push(new Edge(i, i + 1));
-			}
-			if (i + count < points.length) {
-				edges.push(new Edge(i, i + count))
-			}
-		}
-
-		for (let i = 0; i < points.length; i++) {
-			if (i + 1 + count < points.length && (i + 1) % count !== 0) {
-				polygons.push(new Polygon([i, i + 1, i + 1 + count, i + count]));
-			}
-		}
-		super(points, edges, polygons, color);
-	}
+    generatePolygons() {
+        for (let i = 0; i < this.count - 1; i++) {
+            for (let j = 0; j < this.count - 1; j++) {
+                this.polygons.push(new Polygon([
+                    i * this.count + j,
+                    (i + 1) * this.count + j,
+                    (i + 1) * this.count + j + 1,
+                    i * this.count + j + 1,
+                ], this.color));
+            }
+        }
+    }
 }

@@ -1,214 +1,219 @@
 export default class Math3D {
-	constructor({ WIN }) {
-		this.WIN = WIN;
-	};
+    constructor({ WIN }) {
+        this.WIN = WIN;
+    }
 
-	xs(point) {
-		return point.x * (this.WIN.CAMERA.z - this.WIN.DISPLAY.z) / (this.WIN.CAMERA.z - point.z);
-	};
+    xs(point) {
+        const { CAMERA, FOCUS } = this.WIN;
+        return (point.x - CAMERA.x) / (point.z - CAMERA.z) * (FOCUS.z - CAMERA.z) - CAMERA.x;
+    }
 
-	ys(point) {
-		return point.y * (this.WIN.CAMERA.z - this.WIN.DISPLAY.z) / (this.WIN.CAMERA.z - point.z);
-	};
+    ys(point) {
+        const { CAMERA, FOCUS } = this.WIN;
+        return (point.y - CAMERA.y) / (point.z - CAMERA.z) * (FOCUS.z - CAMERA.z) - CAMERA.y;
+    }
 
-	multMatrix(T = [], m = []) {
-		const matrStr = [0, 0, 0, 0]
-		for (let j = 0; j < T.length; j++) {
-			for (let i = 0; i < T[j].length; i++) {
-				matrStr[j] += T[j][i] * m[i];
-			};
-		};
-		return matrStr;
-	};
+    mult(matrix, point) {
+        const c = [0, 0, 0, 0];
+        for (let i = 0; i < 4; i++) {
+            let s = 0;
+            for (let j = 0; j < 4; j++) {
+                s += matrix[j][i] * point[j];
+            }
+            c[i] = s;
+        }
+        return c;
+    }
 
-	calcVector(a, b) {
-		return {
-			x: b.x - a.x,
-			y: b.y - a.y,
-			z: b.z - a.z
-		};
-	};
+    mutlMatrix(a, b) {
+        const result = [];
+        for (let i = 0; i < a.length; i++) {
+            result.push([]);
+            for (let j = 0; j < b[i].length; j++) {
+                result[i][j] = 0;
+                for (let k = 0; k < a[i].length; k++) {
+                    result[i][j] += a[i][k] * b[k][j];
+                }
+            }
+        }
+        return result;
+    }
 
-	vectProd(a, b) {
-		return {
-			x: a.y * b.z - a.z * b.y,
-			y: a.z * b.x - a.x * b.z,
-			z: a.x * b.y - a.y * b.x
-		};
-	};
+    getTranformMatrix() {
+        return Array.from(arguments).reduce((result, matrix) =>
+            this.mutlMatrix(result, matrix), [
+            [1, 0, 0, 0],
+            [0, 1, 0, 0],
+            [0, 0, 1, 0],
+            [0, 0, 0, 1]
+        ]);
+    }
 
-	calcVectModule(a) {
-		return Math.sqrt(a.x * a.x + a.y * a.y + a.z * a.z);
-	};
+    transformPoint(matrix, point) {
+        const array = this.mult(
+            matrix,
+            [point.x, point.y, point.z, 1]);
+        point.x = array[0];
+        point.y = array[1];
+        point.z = array[2];
+    }
 
-	calcRadius(figure) {
-		const points = figure.points;
-		figure.polygons.forEach(polygon => {
-			const center = polygon.center;
-			const p1 = points[polygon.points[0]];
-			const p2 = points[polygon.points[1]];
-			const p3 = points[polygon.points[2]];
-			const p4 = points[polygon.points[3]];
-			polygon.R = (
-				this.calcVectModule(this.calcVector(center, p1)) +
-				this.calcVectModule(this.calcVector(center, p2)) +
-				this.calcVectModule(this.calcVector(center, p3)) +
-				this.calcVectModule(this.calcVector(center, p4))) / 4;
-		});
-	};
+    zoom(delta) {
+        return [
+            [delta, 0, 0, 0],
+            [0, delta, 0, 0],
+            [0, 0, delta, 0],
+            [0, 0, 0, 1]
+        ];
+    }
 
-	calcShadow(polygon, figures, LIGHT) {
-		const M1 = polygon.center;
-		const r = polygon.R;
-		const S = this.calcVector(M1, LIGHT);
-		for (let i = 0; i < figures.length; i++) {
-			if (figures[i]) {
-				if (polygon.figureIndex === 1) {
-					continue;
-				}
-				for (let j = 0; j < figures[i].polygons.length; j++) {
-					const polygon2 = figures[i].polygons[j];
-					const M0 = polygon2.center;
-					if (polygon.lumen > polygon2.lumen) {
-						continue;
-					}
-					const dark = this.calcVectModule(this.vectProd(this.calcVector(M0, M1), S)) / this.calcVectModule(S);
-					if (dark < r) {
-						return {
-							isShadow: true,
-							dark: dark / 1.3,
-						}
-					}
-				}
-			}
-		}
-		return { isShadow: false }
-	};
+    move(dx, dy, dz) {
+        return [
+            [1, 0, 0, 0],
+            [0, 1, 0, 0],
+            [0, 0, 1, 0],
+            [dx, dy, dz, 1]
+        ];
+    }
 
-	mult(matrix, point) {
-		const c = [0, 0, 0, 0];
-		for (let i = 0; i < 4; i++) {
-			let s = 0;
-			for (let j = 0; j < 4; j++) {
-				s += matrix[j][i] * point[j];
-			}
-			c[i] = s;
-		}
-		return c;
-	}
+    rotateOx(alpha) {
+        return [
+            [1, 0, 0, 0],
+            [0, Math.cos(alpha), Math.sin(alpha), 0],
+            [0, -Math.sin(alpha), Math.cos(alpha), 0],
+            [0, 0, 0, 1]
+        ];
+    }
 
-	normVector(figure) {
-		figure.polygons.forEach(polygon => {
-			const edge1 = {
-				x: (figure.points[polygon.points[2]].x - figure.points[polygon.points[0]].x),
-				y: (figure.points[polygon.points[2]].y - figure.points[polygon.points[0]].y),
-				z: (figure.points[polygon.points[2]].z - figure.points[polygon.points[0]].z)
-			}
-			const edge2 = {
-				x: (figure.points[polygon.points[1]].x - figure.points[polygon.points[0]].x),
-				y: (figure.points[polygon.points[1]].y - figure.points[polygon.points[0]].y),
-				z: (figure.points[polygon.points[1]].z - figure.points[polygon.points[0]].z)
-			}
-			return polygon.norm = this.vectProd(edge1, edge2);
-		});
-	};
+    rotateOy(alpha) {
+        return [
+            [Math.cos(alpha), 0, Math.sin(alpha), 0],
+            [0, 1, 0, 0],
+            [-Math.sin(alpha), 0, Math.cos(alpha), 0],
+            [0, 0, 0, 1]
+        ];
+    }
 
-	transform(matrix, point) {
-		const array = this.multMatrix(
-			matrix,
-			[point.x, point.y, point.z, 1]
-		);
-		point.x = array[0];
-		point.y = array[1];
-		point.z = array[2];
-	};
+    rotateOz(alpha) {
+        return [
+            [Math.cos(alpha), -Math.sin(alpha), 0, 0],
+            [Math.sin(alpha), Math.cos(alpha), 0, 0],
+            [0, 0, 1, 0],
+            [0, 0, 0, 1]
+        ]
+    }
 
-	zoom(delta) {
-		return [
-			[delta, 0, 0, 0],
-			[0, delta, 0, 0],
-			[0, 0, delta, 0],
-			[0, 0, 0, 1]
-		];
-	};
+    calcCenters(figure) {
+        figure.polygons.forEach((polygon) => {
+            const points = polygon.points;
+            let x = 0, y = 0, z = 0;
+            for (let i = 0; i < points.length; i++) {
+                x += figure.points[points[i]].x;
+                y += figure.points[points[i]].y;
+                z += figure.points[points[i]].z;
+            };
 
-	move(dx, dy, dz) {
-		return [
-			[1, 0, 0, dx],
-			[0, 1, 0, dy],
-			[0, 0, 1, dz],
-			[0, 0, 0, 1]
-		];
-	};
+            polygon.centre.x = x / points.length;
+            polygon.centre.y = y / points.length;
+            polygon.centre.z = z / points.length;
+        })
+    }
 
-	rotateOy(alpha) {
-		return [
-			[1, 0, 0, 0],
-			[0, Math.cos(alpha), Math.sin(alpha), 0],
-			[0, -(Math.sin(alpha)), Math.cos(alpha), 0],
-			[0, 0, 0, 1]
-		];
-	};
+    calcDistance(figure, endPoint, name) {
+        figure.polygons.forEach((polygon) => {
+            polygon[name] = Math.sqrt(
+                Math.pow(endPoint.x - polygon.centre.x, 2) +
+                Math.pow(endPoint.y - polygon.centre.y, 2) +
+                Math.pow(endPoint.z - polygon.centre.z, 2));
+        });
+    }
 
-	rotateOx(alpha) {
-		return [
-			[Math.cos(alpha), 0, -(Math.sin(alpha)), 0],
-			[0, 1, 0, 0],
-			[Math.sin(alpha), 0, Math.cos(alpha), 0],
-			[0, 0, 0, 1]
-		];
-	};
+    calcVector(a, b) {
+        return {
+            x: b.x - a.x,
+            y: b.y - a.y,
+            z: b.z - a.z,
+        }
+    }
 
-	rotateOz(alpha) {
-		return [
-			[Math.cos(alpha), Math.sin(alpha), 0, 0],
-			[-(Math.sin(alpha)), Math.cos(alpha), 0, 0],
-			[0, 0, 1, 0],
-			[0, 0, 0, 1]
-		];
-	};
+    vectProd(a, b) {
+        return {
+            x: a.y * b.z - a.z * b.y,
+            y: a.x * b.z + a.z * b.x,
+            z: a.x * b.y - a.y * b.x,
+        }
+    }
 
-	calcIlluminationDistance(distance, lumen) {
-		const result = distance ? lumen / Math.pow(distance, 3) : 1;
-		return result > 1 ? 1 : result;
-	};
+    calcVectorModule(a) {
+        return Math.sqrt(
+            Math.pow(a.x, 2) +
+            Math.pow(a.y, 2) +
+            Math.pow(a.z, 2)
+        );
+    }
 
-	calcCenters(figure) {
-		figure.polygons.forEach(polygon => {
-			const points = polygon.points;
-			let x = 0, y = 0, z = 0;
-			for (let j = 0; j < points.length; j++) {
-				x += figure.points[points[j]].x;
-				y += figure.points[points[j]].y;
-				z += figure.points[points[j]].z;
-			}
-			polygon.center.x = x / points.length;
-			polygon.center.y = y / points.length;
-			polygon.center.z = z / points.length;
-		});
-	};
+    calcRadius(figure) {
+        const points = figure.points;
+        figure.polygons.forEach((polygon) => {
+            const centre = polygon.centre;
+            const p1 = points[polygon.points[0]];
+            const p2 = points[polygon.points[1]];
+            const p3 = points[polygon.points[2]];
+            const p4 = points[polygon.points[3]];
 
-	calcDistance(figure, endPoint, name) {
-		figure.polygons.forEach(polygon => {
-			polygon[name] = Math.sqrt(
-				Math.pow(endPoint.x - polygon.center.x, 2) +
-				Math.pow(endPoint.y - polygon.center.y, 2) +
-				Math.pow(endPoint.z - polygon.center.z, 2)
-			)
-		});
-	};
+            polygon.radius = (
+                this.calcVectorModule(this.calcVector(centre, p1)) +
+                this.calcVectorModule(this.calcVector(centre, p2)) +
+                this.calcVectorModule(this.calcVector(centre, p3)) +
+                this.calcVectorModule(this.calcVector(centre, p4))
+            ) / 4;
+        });
+    }
 
-	sortByArtistAlgoritm(polygons) {
-		polygons.sort((a, b) => b.distance - a.distance);
-	};
+    calcShadow(polygon, figures, LIGHT) {
+        if (polygon.radius) {
+            const m1 = polygon.centre;
+            const radius = polygon.radius;
+            const s = this.calcVector(m1, LIGHT);
+            for (let i = 0; i < figures.length; i++) {
+                if (polygon.figureIndex === i) {
+                    continue;
+                }
 
-	calcNormVectors(figure) {
-		figure.polygons.forEach((polygon) => {
-			polygon.normVector = [
-				polygon.centre.x - figure.centre.x,
-				polygon.centre.y - figure.centre.y,
-				polygon.centre.z - figure.centre.z,
-			]
-		})
-	}
+                if (figures[i]) {
+                    for (let j = 0; j < figures[i].polygons.length; j++) {
+                        const polygon2 = figures[i].polygons[j];
+                        const m0 = polygon2.centre;
+                        if (polygon.lumen < polygon2.lumen) {
+                            continue;
+                        }
+                        const dark = this.calcVectorModule(
+                            this.vectProd(this.calcVector(m0, m1),
+                                s
+                            )) / this.calcVectorModule(s);
+                        if (dark < radius) {
+                            return {
+                                isShadow: true,
+                                dark: dark / 1.3
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return {
+            isShadow: false,
+        }
+    }
+
+    sortByArtistAlgoritm(polygons) {
+        polygons.sort((a, b) => b.distance - a.distance);
+    }
+
+    calcIllumination(distance, lumen) {
+        const res = distance ? lumen / Math.pow(distance, 3) : 1;
+        return res > 1 ? 1 : res;
+    }
+
+
 }

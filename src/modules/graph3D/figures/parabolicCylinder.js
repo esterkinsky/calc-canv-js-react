@@ -1,34 +1,84 @@
-import { Point, Edge, Polygon, FigureBody } from '../index'
+import { Figure, Point, Edge, Polygon } from "../entities"
 
-export default class ParabolicCylinder extends FigureBody {
-	constructor(count = 10, point = new Point(0, 0, 0), color) {
-		const points = [];
-		const edges = [];
-		const polygons = [];
-		const p = 5;
-		for (let i = -count; i <= count; i++) {
-			for (let j = -count; j <= count; j++) {
-				const x = point.x + i;
-				const y = point.y + x * x / 2 / p;
-				const z = point.z + j;
-				points.push(new Point(x, y, z));
-			}
-		}
+export default class ParabolicCylinder extends Figure {
+    constructor({
+        color = '#e3b6d4',
+        centre,
+        count = 20,
+        height = 10,
+        focusOx = 5,
+        name = 'Параболический цилиндр',
+    }) {
+        super({ color, centre, name });
+        this.count = count;
+        this.height = height;
+        this.focusOx = focusOx;
 
-		for (let i = 0; i < points.length; i++) {
-			if (i + 1 < points.length && ((i + 1) % (2 * count + 1) !== 0)) {
-				edges.push(new Edge(i, i + 1));
-			}
-			if (2 * count + i + 1 < points.length) {
-				edges.push(new Edge(i, 2 * count + i + 1));
-			}
-		}
+        this.generateFigure();
+    }
 
-		for (let i = 0; i < points.length; i++) {
-			if (i + 2 * count + 2 < points.length && ((i + 1) % (2 * count + 1) !== 0)) {
-				polygons.push(new Polygon([i, i + 1, i + 2 * count + 2, i + 2 * count + 1], color));
-			}
-		}
-		super(points, edges, polygons, color);
-	}
+    generatePoints() {
+        const propI = this.height / this.count;
+        const propJ = 2 * Math.PI / this.count;
+        const sizeProp = 2;
+
+        for (let i = 0; i < this.count; i++) {
+            for (let j = 0; j < this.count; j++) {
+                this.points.push(new Point(
+                    this.centre.x + sizeProp * Math.sqrt(this.focusOx * j * propJ),
+                    this.centre.y + sizeProp * (i * propI - this.height / 2),
+                    this.centre.z + sizeProp * j * propJ,
+                ));
+            }
+        }
+
+        for (let i = 0; i < this.count; i++) {
+            for (let j = 0; j < this.count; j++) {
+                this.points.push(new Point(
+                    this.centre.x - sizeProp * Math.sqrt(this.focusOx * j * propJ),
+                    this.centre.y + sizeProp * (i * propI - this.height / 2),
+                    this.centre.z + sizeProp * j * propJ,
+                ));
+            }
+        }
+    }
+
+
+
+    generateEdges() {
+        const stepIndex = Math.pow(this.count, 2);
+        for (let i = 0; i < this.count; i++) {
+            for (let j = 0; j < this.count - 1; j++) {
+                this.edges.push(new Edge(i * this.count + j, i * this.count + j + 1));
+                this.edges.push(new Edge(i * this.count + j + stepIndex, i * this.count + j + stepIndex + 1));
+                this.edges.push(new Edge((i ? i - 1 : i) * this.count + j, i * this.count + j));
+                this.edges.push(new Edge((i ? i - 1 : i) * this.count + stepIndex + j, i * this.count + stepIndex + j));
+            }
+        }
+        for (let i = 1; i < this.count; i++) {
+            this.edges.push(new Edge(i * this.count - 1, (i + 1) * this.count - 1));
+            this.edges.push(new Edge(i * this.count + stepIndex - 1, (i + 1) * this.count + stepIndex - 1));
+        }
+    }
+
+    generatePolygons() {
+        const stepIndex = Math.pow(this.count, 2);
+        for (let i = 0; i < this.count - 1; i++) {
+            for (let j = 0; j < this.count - 1; j++) {
+                this.polygons.push(new Polygon([
+                    i * this.count + j,
+                    (i + 1) * this.count + j,
+                    (i + 1) * this.count + j + 1,
+                    i * this.count + j + 1,
+                ], this.color));
+
+                this.polygons.push(new Polygon([
+                    i * this.count + stepIndex + j,
+                    (i + 1) * this.count + stepIndex + j,
+                    (i + 1) * this.count + stepIndex + j + 1,
+                    i * this.count + stepIndex + j + 1,
+                ], this.color));
+            }
+        }
+    }
 }
